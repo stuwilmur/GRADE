@@ -162,7 +162,7 @@
 				<div class="sliders">
 					<div class = "slidecontainer">
 						<input type="range" name="revSlider" id=revSlider class = "slider" min="0" max="100" value="0">
-						<p>Additional Revenue (Billion USD): <span id="revenueVal"></span></p>
+						<p>Additional Revenue (Percentage of GRpC): <span id="revenueVal"></span></p>
 					</div>
 				  <div class = "slidecontainer">
 						<input type="range" name="yearSlider" id=yearSlider class = "slider" min="1980" max="2016" value="2016">
@@ -175,7 +175,7 @@
 					<img src="img/u5m.png" width = 100>
 				</label>
 				<label>
-					<input class = "outcomes" type="radio" name="test" value="matMortality" checked>
+					<input class = "outcomes" type="radio" name="test" value="matMortality">
 					<img src="img/mmr.png" width = 100>
 				</label>
 				<!--
@@ -199,7 +199,7 @@
 		
 		<script>
 			var width = 1500;
-			var height = 800;
+			var height = 700;
 			var	subheight = 100;
 			var legendCells = 10;
 			var transitionTime = 500;
@@ -241,7 +241,7 @@
 			var outcomesList = [
 				[ "mortality",					
 					{ 
-						name : "Mortality", 	
+						name : "U5 Mortality", 	
 						loCol : "#279b48", 		
 						hiCol : "#a61414",		
 						desc: "Under-five mortality (per 1000 live births)"}], 
@@ -250,7 +250,7 @@
 						name : "Maternal Mortality", 	
 						loCol : "#279b48", 		
 						hiCol : "#a61414",		
-						desc: "Under-five mortality (per 1000 live births)"}], 
+						desc: "Maternal mortality (per 100,000 births)"}], 
 				/*[ "PScompletion",
 					{
 						name : "Primary School Completion Rate", 
@@ -274,7 +274,11 @@
 			range([outcomesMap.get(outcome).loCol, outcomesMap.get(outcome).hiCol]).
 			interpolate(d3.interpolateLab);
 			
-
+			const cLIC  = 1;
+			const cLMIC  = 2;
+			const cUMIC  = 3;		
+			const cHIC  = 4;
+			
 			// **** edit here if the coefficients are to be updated ****
 			const betaU5M = 1472;
 			const betaMMR = 576.6;
@@ -290,16 +294,38 @@
 				var increase = govRevenue;
 				if (type == "mortality")
 				{
-					var livesSaved = Math.max(betaU5M / d.govRevCap  * increase, d.deaths);
-					var deaths = d.deaths - livesSaved;
-					return [deaths, livesSaved];
+					if (d.mortality > 0)
+					{
+						var effectOnU5m = 0;
+						if (d.govRevCap > 0 )
+						{
+							effectOnU5m = Math.min(betaU5M / d.govRevCap  * increase, d.mortality)
+						}
+						var livesSaved = effectOnU5m * d.u5Pop / 1000;
+						var u5m = d.mortality - effectOnU5m;
+						return [u5m, d.govRevCap > 0 ? livesSaved : NaN];
+					}
+					else
+						return [NaN, NaN];
 					
 				}
 				else if (type == "matMortality" )
 				{
-					var livesSaved = Math.max(betaMMR / Math.pow(Math.log(d.govRevCap), 2.0) * 0.1, d.matDeaths);
-					var deaths = d.matDeaths - livesSaved;
-					return [deaths, livesSaved];
+					if (d.matMortality > 0)
+					{
+						var effectOnMmr = 0;
+						if ( d.govRevCap > 0 )
+						{
+							effectOnMmr = Math.min(betaMMR / Math.pow(Math.log(d.govRevCap), 2.0) * increase, d.matMortality);
+						}
+						var livesSaved = effectOnMmr * d.BIRTHS / 100000;
+						var mmr = d.matMortality - effectOnMmr;
+						return [mmr, d.govRevCap > 0 ? livesSaved : NaN];
+					}
+					else
+					{
+						return [NaN, NaN]
+					}
 				}
 				else if(type == "PScompletion")
 				{
@@ -312,12 +338,15 @@
 			}
 
 			function typeAndSet(d) {
+				d.income = d.INCOME;
 				d.govRevCap = d.GOVREVPERCAP;
 				d.deaths = d.U5DEATHS;
 				d.u5Pop = d.U5POP;
 				d.u5Deaths = d.U5DEATHS;
 				d.births = d.BIRTHS;
 				d.matDeaths = d.MATDEATHS;
+				d.mortality = d.U5MORTALITY;
+				d.matMortality = d.MATMORTALITY;
 
 				countryById.set(d.ISO + d.YEAR, d);
 				return d;
@@ -327,11 +356,11 @@
 				var dataRow = countryById.get(d.id + year);
 				if (dataRow) {
 					var results = computeResult(dataRow, outcome);
-					if false & (country == "$-ALL" || country == d.id	
-					|| country == "$-LIC" 	&& dataRow.LIC == 1 
-					|| country == "$-LMIC" && dataRow.LMIC == 1
-					|| country == "$-UMIC" && dataRow.UMIC == 1
-					|| country == "$-HIC" 	&& dataRow.HIC == 1)
+					if (country == "$-ALL" || country == d.id	
+					|| country == "$-LIC" 	&& dataRow.income == cLIC 
+					|| country == "$-LMIC" && dataRow.income == cLMIC
+					|| country == "$-UMIC" && dataRow.income == cUMIC
+					|| country == "$-HIC" 	&& dataRow.income == cHIC)
 						return colorScale(results[0]);
 					else
 						return "rgba(0, 0, 0, 0.3)";
@@ -351,7 +380,7 @@
 					var text = d.hasOwnProperty("properties") ? "<strong>" + d.properties.name + "</strong><br/>" : "";
 					text = text	+ "<strong>" + outcomesMap.get(outcome).name 
 					+ "</strong>" + ": " + result[0].toFixed(2) + "<br/>"
-					+ "<strong>" + outcomesMap.get(outcome).name +  " improvement" 
+					+ "<strong>" +  " lives saved" 
 					+ "</strong>" + ": " + result[1].toFixed(2) + "<br/>";
 					return text;
 				} else {
@@ -369,7 +398,6 @@
 					return parseFloat(d[k]);
 					});
 				})
-				
 				
 				colorScale.domain(d3.extent(mortalityRate, function(d) {
 				return parseFloat(d[outcome]);
@@ -458,7 +486,7 @@
 				});
 				
 				// add some "special" countries representing aggregate options.
-				/*countries.unshift({
+				countries.unshift({
 					id: "$-HIC", 
 					properties : {name : "High-income countries"}});
 				countries.unshift({
@@ -470,7 +498,6 @@
 				countries.unshift({
 					id: "$-LIC", 
 					properties : {name : "Low-income countries"}});
-					*/
 				countries.unshift({
 					id: "$-ALL", 
 					properties : {name : "Show all countries"}});
