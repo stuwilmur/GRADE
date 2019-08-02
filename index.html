@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>G-LIST</title>
+	
+	<meta http-equiv="content-type" lang="en" content="text/html; charset=utf-8">
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+	<link rel="icon" href="data:,">
+		<style>
+			body {
+				font-family: 'Open Sans', Helvetica, sans-serif;
+
+			}
+			
+			.all{
+				min-width : 100%;
+			}
+			
+			.menu {
+				float : left;
+				width : 350px;
+			}
+			
+			vis {
+				float : left;
+				margin-left : 10px;
+				width : 0px;
+				min-width : 0px;
+			}
+			
+			#vis {
+				float : left;
+				margin-left : 10px;
+				width : 0px;
+				min-width : 0px;
+			}
+			
+			.sliders
+			{
+				margin-top : 10px;
+				margin-bottom : 10px;
+			}
+			
+			select {
+		  
+		  margin-top: 20px;
+		  margin-bottom: 20px;
+		  padding: 5px 35px 5px 5px;
+		  font-size: 16px;
+		  border: 1px solid #ccc;
+		  height: 34px;
+		  font-family: 'Open Sans', Helvetica, sans-serif;
+		  -webkit-appearance: none;
+		  -moz-appearance: none;
+		  appearance: none;
+		}
+
+			.countries {
+				stroke: #fff;
+				stroke-width:1px;
+			}
+
+			.countries:hover{
+				opacity: .7;
+			}
+
+			.legendLinear text {
+				font-size: 9px;
+			}
+
+			/*.d3-tip {
+				font-weight: bold;
+				padding: 10px 15px;
+				background: rgba(255, 255, 255, 0.5);
+				color: #0099FF;
+				border-radius: 2px;
+			}*/
+
+			svg {
+				display: block;
+				margin: auto;
+			}
+
+			.slidecontainer {
+			  width: 100%;
+			  margin-top : 30px;
+			  margin-bottom : 30px;
+			}
+
+			.slider {
+			  -webkit-appearance: none;
+			  width: 100%;
+			  height: 10px;
+			  background: #d3d3d3;
+			  outline: none;
+			  opacity: 0.7;
+			  -webkit-transition: .2s;
+			  transition: opacity .2s;
+			}
+
+			.slider:hover {
+			  opacity: 1;
+			}
+
+			.slider::-webkit-slider-thumb {
+			  -webkit-appearance: none;
+			  appearance: none;
+			  width: 25px;
+			  height: 25px;
+			  border-radius: 15px;
+			  background: #0099FF;
+			  cursor: pointer;
+			  border: none;
+			}
+
+			.slider::-moz-range-thumb {
+			  width: 25px;
+			  height: 25px;
+			  border-radius: 15px;
+			  background: #0099FF;
+			  cursor: pointer;
+			  border: none;
+			}
+			
+			[type=radio] { 
+			position: absolute;
+			opacity: 0;
+			width: 0;
+			height: 0;
+			}
+
+			/* IMAGE STYLES */
+			[type=radio] + img {
+			cursor: pointer;
+			opacity : .50;
+			}
+
+			/* CHECKED STYLES */
+			[type=radio]:checked + img {
+			opacity : 1.00;
+			}
+		</style>
+	</head>
+	<body>
+	
+		<script src="https://d3js.org/d3.v3.min.js"></script>
+		<script src="https://d3js.org/queue.v1.min.js"></script>
+		<script src="https://d3js.org/topojson.v1.min.js"></script>
+		<script src="tooltip.js"></script>
+		<script src="d3-legend.min.js"></script>
+	
+		<h2>G-LIST</h2>
+		<p>
+			Hover over a country to show information.
+		<p>
+
+		<div class="all">
+			<div class="menu">
+				<div>
+					<select id = "countrylist" name="country"></select>
+				</div>
+				<div class="sliders">
+					<div class = "slidecontainer">
+						<input type="range" name="revSlider" id=revSlider class = "slider" min="0" max="100" value="0">
+						<p>Additional Revenue (Billion USD): <span id="revenueVal"></span></p>
+					</div>
+				  <div class = "slidecontainer">
+						<input type="range" name="yearSlider" id=yearSlider class = "slider" min="1980" max="2016" value="2016">
+						<p>Year: <span id="yearVal"></span></p>
+				  </div>
+				</div>
+				
+				<label>
+					<input class = "outcomes" type="radio" name="test" value="mortality" checked>
+					<img src="img/u5m.png" width = 100>
+				</label>
+				<label>
+					<input class = "outcomes" type="radio" name="test" value="matMortality" checked>
+					<img src="img/mmr.png" width = 100>
+				</label>
+				<!--
+				<label>
+					<input class = "outcomes" type="radio" name="test" value="PScompletion">
+					<img src="img/E_SDG goals_icons-individual-rgb-04.png" width = 100>
+				</label>
+				<label>
+					<input class = "outcomes" type="radio" name="test" value="Immunisation">
+					<img src="img/E_SDG goals_icons-individual-rgb-06.png" width = 100>
+				</label>
+				-->
+
+				<div>
+					<p><span id="countrytext"></span></p>
+				</div>
+			</div>		
+			<div id="vis">
+			</div>
+		</div>
+		
+		<script>
+			var width = 1500;
+			var height = 800;
+			var	subheight = 100;
+			var legendCells = 10;
+			var transitionTime = 500;
+
+			var svg = d3.select('#vis').append('svg')
+				.attr('width', width)
+				.attr('height', height)
+				.call(d3.behavior.zoom()
+				.on("zoom", redraw))
+				.append("g");
+				
+			var svg2 = d3.select('#vis').append('svg')
+				.attr('width', width)
+				.attr('height', subheight)
+				.call(d3.behavior.zoom()
+				.on("zoom", redraw))
+				.append("g");
+
+			function redraw() {
+				svg.attr("transform", "translate(" + d3.event.translate 
+				+ ")scale(" + d3.event.scale + ")");
+			}
+
+			var projection = d3.geo.mercator()
+				.scale(225)
+				.translate([width / 2, height / 2]);
+
+			var path = d3.geo.path()
+				.projection(projection);
+
+			var countryById = d3.map();
+			var legendLinear;
+
+			var govRevenue = 0;
+			var year = 2016;
+			var country = "$-ALL";
+			
+			// **** add or update outcomes here ****
+			var outcomesList = [
+				[ "mortality",					
+					{ 
+						name : "Mortality", 	
+						loCol : "#279b48", 		
+						hiCol : "#a61414",		
+						desc: "Under-five mortality (per 1000 live births)"}], 
+				[ "matMortality",					
+					{ 
+						name : "Maternal Mortality", 	
+						loCol : "#279b48", 		
+						hiCol : "#a61414",		
+						desc: "Under-five mortality (per 1000 live births)"}], 
+				/*[ "PScompletion",
+					{
+						name : "Primary School Completion Rate", 
+						loCol : "#85c1e9", 
+						hiCol : "#c31f33",
+						fixedExtent : [0,100],
+						desc : "Primary School Completion (%)"}],
+				[ "Immunisation",							// column heading in csv file
+					{					
+						name : "Immunisation Rate", 		// Name (full text)
+						loCol : "#a93226", 					// Colour for low end of scale
+						hiCol : "#00aed9",					// Colour for high end of scale
+						fixedExtent : [0,100],				// OPTIONAL: fixed scale limits (else automatic)
+						desc : "Immunisation Rate (%)"}]	// Description
+				*/
+			];
+			
+			let outcomesMap = new Map(outcomesList);
+			var outcome = "mortality";
+			var colorScale = d3.scale.linear().
+			range([outcomesMap.get(outcome).loCol, outcomesMap.get(outcome).hiCol]).
+			interpolate(d3.interpolateLab);
+			
+
+			// **** edit here if the coefficients are to be updated ****
+			const betaU5M = 1472;
+			const betaMMR = 576.6;
+
+			queue()
+				.defer(d3.json, "countries.json")
+				.defer(d3.csv, "lives saved data.csv", typeAndSet) // process
+				.await(loaded);
+
+
+			function computeResult(d, type)
+			{
+				var increase = govRevenue;
+				if (type == "mortality")
+				{
+					var livesSaved = Math.max(betaU5M / d.govRevCap  * increase, d.deaths);
+					var deaths = d.deaths - livesSaved;
+					return [deaths, livesSaved];
+					
+				}
+				else if (type == "matMortality" )
+				{
+					var livesSaved = Math.max(betaMMR / Math.pow(Math.log(d.govRevCap), 2.0) * 0.1, d.matDeaths);
+					var deaths = d.matDeaths - livesSaved;
+					return [deaths, livesSaved];
+				}
+				else if(type == "PScompletion")
+				{
+					
+				}
+				else if(type == "Immunisation")
+				{
+					
+				}
+			}
+
+			function typeAndSet(d) {
+				d.govRevCap = d.GOVREVPERCAP;
+				d.deaths = d.U5DEATHS;
+				d.u5Pop = d.U5POP;
+				d.u5Deaths = d.U5DEATHS;
+				d.births = d.BIRTHS;
+				d.matDeaths = d.MATDEATHS;
+
+				countryById.set(d.ISO + d.YEAR, d);
+				return d;
+			}
+
+			function getColor(d) {
+				var dataRow = countryById.get(d.id + year);
+				if (dataRow) {
+					var results = computeResult(dataRow, outcome);
+					if false & (country == "$-ALL" || country == d.id	
+					|| country == "$-LIC" 	&& dataRow.LIC == 1 
+					|| country == "$-LMIC" && dataRow.LMIC == 1
+					|| country == "$-UMIC" && dataRow.UMIC == 1
+					|| country == "$-HIC" 	&& dataRow.HIC == 1)
+						return colorScale(results[0]);
+					else
+						return "rgba(0, 0, 0, 0.3)";
+				} else {
+					return "rgba(0, 0, 0, 0.7)";
+				}
+			}
+
+			function getText(d) {
+				if (d.id[0] == "$")
+				{
+					return "";
+				}
+				var dataRow = countryById.get(d.id + year);
+				if (dataRow) {
+					var result = computeResult(dataRow, outcome);
+					var text = d.hasOwnProperty("properties") ? "<strong>" + d.properties.name + "</strong><br/>" : "";
+					text = text	+ "<strong>" + outcomesMap.get(outcome).name 
+					+ "</strong>" + ": " + result[0].toFixed(2) + "<br/>"
+					+ "<strong>" + outcomesMap.get(outcome).name +  " improvement" 
+					+ "</strong>" + ": " + result[1].toFixed(2) + "<br/>";
+					return text;
+				} else {
+					if (d.hasOwnProperty("properties"))
+						return "<strong>" + d.properties.name + "</strong>" + ": No data";
+					else
+						return "<strong>No data</strong>";
+				}
+			}
+
+			function loaded(error, countries, mortalityRate) {
+
+				outcomesMap.forEach(function(v, k){
+					outcomesMap.get(k).extent = d3.extent(mortalityRate, function(d) {
+					return parseFloat(d[k]);
+					});
+				})
+				
+				
+				colorScale.domain(d3.extent(mortalityRate, function(d) {
+				return parseFloat(d[outcome]);
+				}));
+				
+				var countries = topojson.feature(countries, countries.objects.units).features;
+
+				svg.selectAll('path.countries')
+					.data(countries)
+					.enter()
+					.append('path')
+					.attr('class', 'countries')
+					.attr('d', path)
+					.attr('fill', function(d,i) {
+						return getColor(d);
+					})
+					.call(d3.helper.tooltip(
+						function(d, i){
+							return getText(d);
+						})); // tooltip based on an example from Roger Veciana: http://bl.ocks.org/rveciana/5181105    
+
+				svg2.append("g")
+				  .attr("class", "legendLinear")
+				  .attr("transform", "translate(0,20)");
+
+				legendLinear = d3.legend.color()
+				  .shapeWidth(75)
+				  .orient('horizontal')
+				  .scale(colorScale)
+				  .cells(legendCells);
+
+				svg2.select(".legendLinear")
+				  .call(legendLinear);
+				  
+				svg2.append("text")
+					.attr("x", 0)             
+					.attr("y", 15)
+					.text(outcomesMap.get(outcome).desc);
+				  
+				d3.select("#revSlider").on("change", function(d){
+				  govRevenue = this.value / 100.0;
+				})
+				
+			function colourCountries()
+			{
+				   svg.selectAll('path.countries').transition()  
+				  .duration(transitionTime)  
+				  .attr('fill', function(d) {
+					return getColor(d);
+				  })
+			}
+			
+			function updateLegend()
+			{
+				var theOutcome = outcomesMap.get(outcome)
+				var domain = theOutcome.hasOwnProperty("fixedExtent") ? theOutcome.fixedExtent : theOutcome.extent;
+				colorScale.range([theOutcome.loCol, theOutcome.hiCol])
+				.domain(domain);
+				legendLinear.scale(colorScale);
+				
+				svg2.select(".legendLinear").remove();
+				
+				svg2.append("g")
+				.attr("class", "legendLinear")
+				.attr("transform", "translate(0,20)");
+				
+				svg2.select(".legendLinear")
+				.call(legendLinear);
+				
+				svg2.select("text")
+				.text(theOutcome.desc);
+			}
+			
+			function updateCountries()
+			{
+				var d = {"id" : country};
+				d3.select("#countrytext").
+				html(getText(d));
+				colourCountries();
+			}
+			
+			function initMenus()
+			{
+				countries = countries.sort(function(a,b){
+				return a.properties.name > b.properties.name;
+				});
+				
+				// add some "special" countries representing aggregate options.
+				/*countries.unshift({
+					id: "$-HIC", 
+					properties : {name : "High-income countries"}});
+				countries.unshift({
+					id: "$-UMIC", 
+					properties : {name : "Upper and middle-income countries"}});
+				countries.unshift({
+					id: "$-LMIC", 
+					properties : {name : "Low- and middle-income countries"}});
+				countries.unshift({
+					id: "$-LIC", 
+					properties : {name : "Low-income countries"}});
+					*/
+				countries.unshift({
+					id: "$-ALL", 
+					properties : {name : "Show all countries"}});
+			
+				 d3.select('#countrylist')
+				.on('change', function(d) {
+					country = this.options[this.selectedIndex].value;
+					updateCountries();
+				})
+				.selectAll('option')
+				.data(countries)
+				.enter()
+				.append('option')
+				.attr('value', function(d) {return d.id;})
+				.text(function(d) {return d.properties.name;});	
+			}
+
+			initMenus();
+			d3.select("#revenueVal").text(govRevenue);
+			d3.select("#yearVal").text(year);
+
+
+			d3.select("#revSlider").on("input", function(d){
+				govRevenue = this.value;
+				d3.select("#revenueVal").text(govRevenue + " percent");
+				updateCountries();
+			});
+
+			d3.select("#yearSlider").on("input", function(d){
+				year = this.value;
+				d3.select("#yearVal").text(year);
+				updateCountries();
+			});
+			
+			d3.selectAll(".outcomes").on("input", function(d){
+				outcome = this.value;
+				updateLegend();
+				updateCountries();
+			});
+
+			}
+
+		</script>
+	</body>
+</html>
