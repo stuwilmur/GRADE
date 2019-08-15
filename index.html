@@ -139,6 +139,14 @@
 			[type=radio]:checked + img {
 			opacity : 1.00;
 			}
+			
+			#revDiv{
+				display : block;
+			}
+			
+			#absRevDiv{
+				display : none;
+			}
 		</style>
 	</head>
 	<body>
@@ -158,11 +166,26 @@
 			<div class="menu">
 				<div>
 					<select id = "countrylist" name="country"></select>
+					<p>
+					Specify additoinal revenue as:
+					</p>
+					<select id = "methodlist" name="method">
+						   
+						  <option value="percentage">Percentage of gov. rev. per capita</option>
+						  <option value="absolute">Absolute extra revenue</option>
+					</select>
 				</div>
+				
 				<div class="sliders">
 					<div class = "slidecontainer">
+					<div id = "revDiv">
 						<input type="range" name="revSlider" id=revSlider class = "slider" min="0" max="100" value="0">
-						<p>Additional Revenue (% of GRpC): <span id="revenueVal"></span></p>
+						<p>Additional Revenue (% of GRpC): <span id="revenueVal">0&#37;</span></p>
+					</div>
+					<div id = "absRevDiv">
+						<input type="range" name="absRevSlider" id=absRevSlider class = "slider" min="0" max="1000" value="0">
+						<p>Additional Revenue (Millions of USD): <span id="absRevenueVal">$0M</span></p>
+					</div>
 					</div>
 				  <div class = "slidecontainer">
 						<input type="range" name="yearSlider" id=yearSlider class = "slider" min="1980" max="2016" value="2016">
@@ -234,8 +257,10 @@
 			var legendLinear;
 
 			var govRevenue = 0;
+			var absGovRev = 0;
 			var year = 2016;
 			var country = "$-ALL";
+			var method = "percentage"
 			
 			// **** add or update outcomes here ****
 			var outcomesList = [
@@ -287,11 +312,30 @@
 				.defer(d3.json, "countries.json")
 				.defer(d3.csv, "lives saved data.csv", typeAndSet) // process
 				.await(loaded);
+				
+			function getRevenue(d, m)
+			{
+				if (m == "percentage")
+				{
+					var newAbsRev = (d.govRevCap * (govRevenue)) * d.population;
+					return [govRevenue, newAbsRev];
+				}
+				else
+				{
+					var newGRPC = d.govRevCap + absGovRev / d.population;
+					var newGovRev = newGRPC / d.govRevCap - 1;
+					return [newGovRev, absGovRev];
+				}
+			}
 
 
 			function computeResult(d, type)
 			{
-				var increase = govRevenue;
+				// returns [improved outome, lives saved, original outome]
+				
+				var computedRevenue = getRevenue(d, method);
+				
+				var increase = computedRevenue[0];
 				if (type == "mortality")
 				{
 					if (d.mortality > 0)
@@ -303,10 +347,10 @@
 						}
 						var livesSaved = Math.round(effectOnU5m * d.u5Pop / 1000);
 						var u5m = d.mortality - effectOnU5m;
-						return [u5m, d.govRevCap > 0 ? livesSaved : NaN];
+						return [u5m, d.govRevCap > 0 ? livesSaved : NaN, +d.mortality];
 					}
 					else
-						return [NaN, NaN];
+						return [NaN, NaN, NaN];
 					
 				}
 				else if (type == "matMortality" )
@@ -320,11 +364,11 @@
 						}
 						var livesSaved = Math.round(effectOnMmr * d.BIRTHS / 100000);
 						var mmr = d.matMortality - effectOnMmr;
-						return [mmr, d.govRevCap > 0 ? livesSaved : NaN];
+						return [mmr, d.govRevCap > 0 ? livesSaved : NaN, +d.matMortality];
 					}
 					else
 					{
-						return [NaN, NaN]
+						return [NaN, NaN, NaN]
 					}
 				}
 				else if(type == "PScompletion")
@@ -339,7 +383,7 @@
 
 			function typeAndSet(d) {
 				d.income = d.INCOME;
-				d.govRevCap = d.GOVREVPERCAP;
+				d.govRevCap = +d.GOVREVPERCAP;
 				d.deaths = d.U5DEATHS;
 				d.u5Pop = d.U5POP;
 				d.u5Deaths = d.U5DEATHS;
@@ -347,6 +391,7 @@
 				d.matDeaths = d.MATDEATHS;
 				d.mortality = d.U5MORTALITY;
 				d.matMortality = d.MATMORTALITY;
+				d.population = +d.POPULATION;
 
 				countryById.set(d.ISO + d.YEAR, d);
 				return d;
@@ -377,11 +422,21 @@
 				var dataRow = countryById.get(d.id + year);
 				if (dataRow) {
 					var result = computeResult(dataRow, outcome);
-					var text = d.hasOwnProperty("properties") ? "<strong>" + d.properties.name + "</strong><br/>" : "";
-					text = text	+ "<strong>" + outcomesMap.get(outcome).name 
+					var revenues = getRevenue(dataRow, method);
+					var newGovRev = 100 * revenues[0];
+					var newGovAbsRev = revenues[1] / 1E6;
+					var text = d.hasOwnProperty("properties") ? "<strong> " + d.properties.name + "</strong><br/>" : "";
+					text = text	+ "<strong> Original " + outcomesMap.get(outcome).name 
+					+ "</strong>" + ": " + result[2].toFixed(2) + "<br/>";
+					text = text	+ "<strong> Improved " + outcomesMap.get(outcome).name 
 					+ "</strong>" + ": " + result[0].toFixed(2) + "<br/>"
 					+ "<strong>" +  " lives saved" 
-					+ "</strong>" + ": " + result[1].toFixed(0) + "<br/>";
+					+ "</strong>" + ": " + result[1].toFixed(0) + "<br/>"
+					+ "<strong>" +  "Percentage GrPC increase"
+					+ "</strong>" + ": " + newGovRev.toFixed(2) + "%<br/>"
+					+ "<strong>" +  "Extra revenue" 
+					+ "</strong>" + ": $" + newGovAbsRev.toFixed(2) + "M<br/>";
+					
 					return text;
 				} else {
 					if (d.hasOwnProperty("properties"))
@@ -439,6 +494,9 @@
 				  
 				d3.select("#revSlider").on("change", function(d){
 				  govRevenue = this.value / 100.0;
+				}); 
+				d3.select("#absRevSlider").on("change", function(){
+				  absGovRev = this.value * 1E6;
 				})
 				
 			function colourCountries()
@@ -496,10 +554,10 @@
 					properties : {name : "High-income countries"}});
 				countries.unshift({
 					id: "$-UMIC", 
-					properties : {name : "Upper and middle-income countries"}});
+					properties : {name : "Upper-middle-income countries"}});
 				countries.unshift({
 					id: "$-LMIC", 
-					properties : {name : "Low- and middle-income countries"}});
+					properties : {name : "Lower-middle-income countries"}});
 				countries.unshift({
 					id: "$-LIC", 
 					properties : {name : "Low-income countries"}});
@@ -518,6 +576,26 @@
 				.append('option')
 				.attr('value', function(d) {return d.id;})
 				.text(function(d) {return d.properties.name;});	
+				
+				d3.select("#methodlist")
+				.on("change", function(d) {
+					method = this.options[this.selectedIndex].value;
+					if (method == "percentage")
+					{
+						d3.select("#revDiv")
+						.style("display", "block")
+						d3.select("#absRevDiv")
+						.style("display", "none")
+					}
+					else
+					{
+						d3.select("#revDiv")
+						.style("display", "none")
+						d3.select("#absRevDiv")
+						.style("display", "block")
+					}
+					updateCountries();
+				})
 			}
 
 			initMenus();
@@ -528,6 +606,12 @@
 			d3.select("#revSlider").on("input", function(d){
 				govRevenue = this.value / 100.0;
 				d3.select("#revenueVal").text(Math.round(govRevenue * 100) + " %");
+				updateCountries();
+			});
+			
+			d3.select("#absRevSlider").on("input", function(d){
+				absGovRev = this.value * 1E6;
+				d3.select("#absRevenueVal").text("$" + Math.round(absGovRev / 1E6) + "M");
 				updateCountries();
 			});
 
