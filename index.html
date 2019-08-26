@@ -345,7 +345,7 @@
 						{
 							effectOnU5m = Math.min(betaU5M / d.govRevCap  * increase, d.mortality)
 						}
-						var livesSaved = Math.round(effectOnU5m * d.u5Pop / 1000);
+						var livesSaved = effectOnU5m * d.u5Pop / 1000;
 						var u5m = d.mortality - effectOnU5m;
 						return [u5m, d.govRevCap > 0 ? livesSaved : NaN, +d.mortality];
 					}
@@ -362,7 +362,7 @@
 						{
 							effectOnMmr = Math.min(betaMMR / Math.pow(Math.log(d.govRevCap), 2.0) * increase, d.matMortality);
 						}
-						var livesSaved = Math.round(effectOnMmr * d.BIRTHS / 100000);
+						var livesSaved = effectOnMmr * d.BIRTHS / 100000;
 						var mmr = d.matMortality - effectOnMmr;
 						return [mmr, d.govRevCap > 0 ? livesSaved : NaN, +d.matMortality];
 					}
@@ -427,11 +427,11 @@
 					var newGovAbsRev = revenues[1] / 1E6;
 					var text = d.hasOwnProperty("properties") ? "<strong> " + d.properties.name + "</strong><br/>" : "";
 					text = text	+ "<strong> Original " + outcomesMap.get(outcome).name 
-					+ "</strong>" + ": " + result[2].toFixed(2) + "<br/>";
+					+ "</strong>" + ": " + result[2].toFixed(3) + "<br/>";
 					text = text	+ "<strong> Improved " + outcomesMap.get(outcome).name 
-					+ "</strong>" + ": " + result[0].toFixed(2) + "<br/>"
+					+ "</strong>" + ": " + result[0].toFixed(3) + "<br/>"
 					+ "<strong>" +  " lives saved" 
-					+ "</strong>" + ": " + result[1].toFixed(0) + "<br/>"
+					+ "</strong>" + ": " + result[1].toFixed(1) + "<br/>"
 					+ "<strong>" +  "Percentage GrPC increase"
 					+ "</strong>" + ": " + newGovRev.toFixed(2) + "%<br/>"
 					+ "<strong>" +  "Extra revenue" 
