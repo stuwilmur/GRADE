@@ -147,6 +147,10 @@
 			#absRevDiv{
 				display : none;
 			}
+			
+			#pcRevDiv{
+				display : none;
+			}
 		</style>
 	</head>
 	<body>
@@ -173,6 +177,7 @@
 						   
 						  <option value="percentage">Percentage of gov. rev. per capita</option>
 						  <option value="absolute">Absolute extra revenue</option>
+						   <option value="pc">Additional revenue per capita</option>
 					</select>
 				</div>
 				
@@ -185,6 +190,10 @@
 					<div id = "absRevDiv">
 						<input type="range" name="absRevSlider" id=absRevSlider class = "slider" min="0" max="1000" value="0">
 						<p>Additional Revenue (Millions of USD): <span id="absRevenueVal">$0M</span></p>
+					</div>
+					<div id = "pcRevDiv">
+						<input type="range" name="pcRevSlider" id=pcRevSlider class = "slider" min="0" max="1000" value="0">
+						<p>Additional Revenue (USD per capita): <span id="perCapitaRevenueVal">$0</span></p>
 					</div>
 					</div>
 				  <div class = "slidecontainer">
@@ -258,6 +267,7 @@
 
 			var govRevenue = 0;
 			var absGovRev = 0;
+			var pcGovRev = 0;
 			var year = 2016;
 			var country = "$-ALL";
 			var method = "percentage"
@@ -318,13 +328,22 @@
 				if (m == "percentage")
 				{
 					var newAbsRev = (d.govRevCap * (govRevenue)) * d.population;
-					return [govRevenue, newAbsRev];
+					var additionalPerCapita = d.govRevCap * govRevenue;
+					return [govRevenue, newAbsRev, additionalPerCapita];
+				}
+				else if (m == "pc")
+				{
+					var newGRPC = d.govRevCap + pcGovRev;
+					var newGovRev = newGRPC / d.govRevCap - 1;
+					var newAbsRev = (d.govRevCap * (newGovRev)) * d.population;
+					return [newGovRev, newAbsRev, pcGovRev];
 				}
 				else
 				{
 					var newGRPC = d.govRevCap + absGovRev / d.population;
 					var newGovRev = newGRPC / d.govRevCap - 1;
-					return [newGovRev, absGovRev];
+					var additionalPerCapita = absGovRev / d.population;
+					return [newGovRev, absGovRev, additionalPerCapita];
 				}
 			}
 
@@ -425,17 +444,23 @@
 					var revenues = getRevenue(dataRow, method);
 					var newGovRev = 100 * revenues[0];
 					var newGovAbsRev = revenues[1] / 1E6;
+					var newAdditionalPCGovRev = revenues[2];
 					var text = d.hasOwnProperty("properties") ? "<strong> " + d.properties.name + "</strong><br/>" : "";
+					var delta = result[0] - result[2];
 					text = text	+ "<strong> Original " + outcomesMap.get(outcome).name 
 					+ "</strong>" + ": " + result[2].toFixed(3) + "<br/>";
 					text = text	+ "<strong> Improved " + outcomesMap.get(outcome).name 
 					+ "</strong>" + ": " + result[0].toFixed(3) + "<br/>"
+					text = text	+ "<strong> Resulting change in " + outcomesMap.get(outcome).name 
+					+ "</strong>" + ": " + delta.toFixed(3) + "<br/>" 
 					+ "<strong>" +  " lives saved" 
 					+ "</strong>" + ": " + result[1].toFixed(1) + "<br/>"
 					+ "<strong>" +  "Percentage GrPC increase"
 					+ "</strong>" + ": " + newGovRev.toFixed(2) + "%<br/>"
-					+ "<strong>" +  "Extra revenue" 
-					+ "</strong>" + ": $" + newGovAbsRev.toFixed(2) + "M<br/>";
+					+ "<strong>" +  "Absolute extra revenue" 
+					+ "</strong>" + ": $" + newGovAbsRev.toFixed(2) + "M<br/>"
+					+ "<strong>" +  "Extra revenue per capita" 
+					+ "</strong>" + ": $" + newAdditionalPCGovRev.toFixed(0) + "<br/>";
 					
 					return text;
 				} else {
@@ -498,6 +523,9 @@
 				d3.select("#absRevSlider").on("change", function(){
 				  absGovRev = this.value * 1E6;
 				})
+				d3.select("#pcRevSlider").on("change", function(){
+				  pcGovRev = this.value * 100;
+				});
 				
 			function colourCountries()
 			{
@@ -586,6 +614,17 @@
 						.style("display", "block")
 						d3.select("#absRevDiv")
 						.style("display", "none")
+						d3.select("#pcRevDiv")
+						.style("display", "none")
+					}
+					else if (method == "pc")
+					{
+						d3.select("#revDiv")
+						.style("display", "none")
+						d3.select("#absRevDiv")
+						.style("display", "none")
+						d3.select("#pcRevDiv")
+						.style("display", "block")
 					}
 					else
 					{
@@ -593,6 +632,8 @@
 						.style("display", "none")
 						d3.select("#absRevDiv")
 						.style("display", "block")
+						d3.select("#pcRevDiv")
+						.style("display", "none")
 					}
 					updateCountries();
 				})
@@ -612,6 +653,12 @@
 			d3.select("#absRevSlider").on("input", function(d){
 				absGovRev = this.value * 1E6;
 				d3.select("#absRevenueVal").text("$" + Math.round(absGovRev / 1E6) + "M");
+				updateCountries();
+			});
+			
+			d3.select("#pcRevSlider").on("input", function(d){
+				pcGovRev = this.value * 1;
+				d3.select("#perCapitaRevenueVal").text("$" + Math.round(pcGovRev));
 				updateCountries();
 			});
 
