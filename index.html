@@ -6,152 +6,215 @@
 	<meta http-equiv="content-type" lang="en" content="text/html; charset=utf-8">
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
 	<link rel="icon" href="data:,">
-		<style>
-			body {
-				font-family: 'Open Sans', Helvetica, sans-serif;
+	<style>
+		body {
+			font-family: 'Open Sans', Helvetica, sans-serif;
 
-			}
-			
-			.all{
-				min-width : 100%;
-			}
-			
-			.menu {
-				float : left;
-				width : 350px;
-			}
-			
-			vis {
-				float : left;
-				margin-left : 10px;
-				width : 0px;
-				min-width : 0px;
-			}
-			
-			#vis {
-				float : left;
-				margin-left : 10px;
-				width : 0px;
-				min-width : 0px;
-			}
-			
-			.sliders
-			{
-				margin-top : 10px;
-				margin-bottom : 10px;
-			}
-			
-			select {
-		  
-		  margin-top: 20px;
-		  margin-bottom: 20px;
-		  padding: 5px 35px 5px 5px;
-		  font-size: 16px;
-		  border: 1px solid #ccc;
-		  height: 34px;
-		  font-family: 'Open Sans', Helvetica, sans-serif;
-		  -webkit-appearance: none;
-		  -moz-appearance: none;
-		  appearance: none;
+		}
+		
+		.all{
+			min-width : 100%;
+		}
+		
+		.menu {
+			float : left;
+			width : 350px;
+		}
+		
+		vis {
+			float : left;
+			margin-left : 10px;
+			margin-top : 10px;
+			width : 0px;
+			min-width : 0px;
+		}
+		
+		#vis {
+			float : left;
+			margin-left : 10px;
+			width : 0px;
+			min-width : 0px;
+		}
+		
+		.sliders
+		{
+			margin-top : 10px;
+			margin-bottom : 10px;
+		}
+		
+		select {
+	  
+	  margin-top: 20px;
+	  margin-bottom: 20px;
+	  padding: 5px 35px 5px 5px;
+	  font-size: 16px;
+	  border: 1px solid #ccc;
+	  height: 34px;
+	  font-family: 'Open Sans', Helvetica, sans-serif;
+	  -webkit-appearance: none;
+	  -moz-appearance: none;
+	  appearance: none;
+	}
+
+		.countries {
+			stroke: #fff;
+			stroke-width:1px;
 		}
 
-			.countries {
-				stroke: #fff;
-				stroke-width:1px;
-			}
+		.countries:hover{
+			opacity: .7;
+		}
 
-			.countries:hover{
-				opacity: .7;
-			}
+		.legendLinear text {
+			font-size: 9px;
+		}
 
-			.legendLinear text {
-				font-size: 9px;
-			}
+		/*.d3-tip {
+			font-weight: bold;
+			padding: 10px 15px;
+			background: rgba(255, 255, 255, 0.5);
+			color: #0099FF;
+			border-radius: 2px;
+		}*/
 
-			/*.d3-tip {
-				font-weight: bold;
-				padding: 10px 15px;
-				background: rgba(255, 255, 255, 0.5);
-				color: #0099FF;
-				border-radius: 2px;
-			}*/
+		svg {
+			display: block;
+			margin: auto;
+		}
 
-			svg {
-				display: block;
-				margin: auto;
-			}
+		.slidecontainer {
+		  width: 100%;
+		  margin-top : 30px;
+		  margin-bottom : 30px;
+		}
 
-			.slidecontainer {
-			  width: 100%;
-			  margin-top : 30px;
-			  margin-bottom : 30px;
-			}
+		.slider {
+		  -webkit-appearance: none;
+		  width: 100%;
+		  height: 10px;
+		  background: #d3d3d3;
+		  outline: none;
+		  opacity: 0.7;
+		  -webkit-transition: .2s;
+		  transition: opacity .2s;
+		}
 
-			.slider {
-			  -webkit-appearance: none;
-			  width: 100%;
-			  height: 10px;
-			  background: #d3d3d3;
-			  outline: none;
-			  opacity: 0.7;
-			  -webkit-transition: .2s;
-			  transition: opacity .2s;
-			}
+		.slider:hover {
+		  opacity: 1;
+		}
 
-			.slider:hover {
-			  opacity: 1;
-			}
+		.slider::-webkit-slider-thumb {
+		  -webkit-appearance: none;
+		  appearance: none;
+		  width: 25px;
+		  height: 25px;
+		  border-radius: 15px;
+		  background: #0099FF;
+		  cursor: pointer;
+		  border: none;
+		}
 
-			.slider::-webkit-slider-thumb {
-			  -webkit-appearance: none;
-			  appearance: none;
-			  width: 25px;
-			  height: 25px;
-			  border-radius: 15px;
-			  background: #0099FF;
-			  cursor: pointer;
-			  border: none;
-			}
+		.slider::-moz-range-thumb {
+		  width: 25px;
+		  height: 25px;
+		  border-radius: 15px;
+		  background: #0099FF;
+		  cursor: pointer;
+		  border: none;
+		}
+		
+		[type=radio] { 
+		position: absolute;
+		opacity: 0;
+		width: 0;
+		height: 0;
+		}
 
-			.slider::-moz-range-thumb {
-			  width: 25px;
-			  height: 25px;
-			  border-radius: 15px;
-			  background: #0099FF;
-			  cursor: pointer;
-			  border: none;
-			}
-			
-			[type=radio] { 
-			position: absolute;
-			opacity: 0;
-			width: 0;
-			height: 0;
-			}
+		/* IMAGE STYLES */
+		[type=radio] + img {
+		cursor: pointer;
+		opacity : .50;
+		}
 
-			/* IMAGE STYLES */
-			[type=radio] + img {
-			cursor: pointer;
-			opacity : .50;
-			}
+		/* CHECKED STYLES */
+		[type=radio]:checked + img {
+		opacity : 1.00;
+		}
+		
+		#revDiv{
+			display : block;
+		}
+		
+		#absRevDiv{
+			display : none;
+		}
+		
+		#pcRevDiv{
+			display : none;
+		}
+		
+		
+		.inline-div {
+			display: block;
+		}
 
-			/* CHECKED STYLES */
-			[type=radio]:checked + img {
-			opacity : 1.00;
-			}
-			
-			#revDiv{
-				display : block;
-			}
-			
-			#absRevDiv{
-				display : none;
-			}
-			
-			#pcRevDiv{
-				display : none;
-			}
-		</style>
+		h2
+		{
+			display: inline-block;
+		}
+		h3
+		{
+			font-size: 90%;
+			display: inline-block;
+			background-color: #e09900;
+			border-width: 10px;
+			border-style: solid;
+			border-radius: 0px;
+			border-color: #e09900;
+			margin-left: 20px;
+			color: white;
+		}
+		
+		a{
+			text-decoration:none;
+		}
+
+		.label {
+			padding: 1px 3px 2px;
+			font-size: 90%;
+			font-weight: bold;
+			color: #ffffff;
+			white-space: nowrap;
+			background-color: #e09900;
+			-webkit-border-radius: 0px;
+			-moz-border-radius: 0px;
+			border-radius: 0px;
+			border: solid;
+			border-color: #e09900;
+			border-width: 10px;
+			text-decoration: none;
+		}
+		.label.success {
+			background-color: #e09900;
+		}
+
+		.item a h2.new-label span{
+		  position: relative;
+		  content: 'NEW'
+		}
+		.item:hover a h2.new-label span{
+		  display: none;
+		}
+		.item:hover a h2.new-label:after{
+		  content: 'G-LIST Homepage \2190';
+		}
+
+		.label:hover {
+		  -webkit-border-radius: 3px;
+		  -moz-border-radius: 3px;
+		  border-radius: 3px;
+		}
+	</style>
 	</head>
 	<body>
 	
@@ -161,13 +224,22 @@
 		<script src="tooltip.js"></script>
 		<script src="d3-legend.min.js"></script>
 	
+
+
+		<div class="all">
+			<div class="menu">
+					<div class="inline-div">
+			
+			<div class="item">
+				<a href = http://med.st-andrews.ac.uk/glist/maps/interactive-map-of-u5-mortality/>
+					<h2 class="label success new-label"><span class="align">G-LIST Homepage</span></h2>
+				</a>	
+			</div>
+		</div>
 		<h2>G-LIST</h2>
 		<p>
 			Hover over a country to show information.
 		<p>
-
-		<div class="all">
-			<div class="menu">
 				<div>
 					<select id = "countrylist" name="country"></select>
 					<p>
