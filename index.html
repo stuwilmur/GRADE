@@ -471,6 +471,32 @@
 					
 				}
 			}
+			
+			function computeCostPerLife(d, type)
+			{
+				var costPerCapita = NaN;
+				var pop = NaN;
+				
+				if (type == "mortality")
+				{
+					pop = d.u5Pop
+				}
+				else if (type == "matMortality")
+				{
+					pop = d.BIRTHS;
+				}
+				if (pop > 0 & d.govRevCap > 0)
+				{
+					costPerCapita = 1000 * d.govRevCap ** 2 / (betaU5M * pop);
+					console.log(costPerCapita);
+				}
+			
+				var costAbsolute = costPerCapita * d.population;
+				var costPCRatio = costPerCapita / d.govRevCap;
+				
+				return [costPerCapita, costAbsolute, costPCRatio];
+			}
+			
 
 			function typeAndSet(d) {
 				d.income = d.INCOME;
@@ -513,6 +539,8 @@
 				var dataRow = countryById.get(d.id + year);
 				if (dataRow) {
 					var result = computeResult(dataRow, outcome);
+					var costs = computeCostPerLife(dataRow, outcome);
+					console.log(costs);
 					var revenues = getRevenue(dataRow, method);
 					var newGovRev = 100 * revenues[0];
 					var newGovAbsRev = revenues[1] / 1E6;
@@ -527,12 +555,20 @@
 					+ "</strong>" + ": " + delta.toFixed(3) + "<br/>" 
 					+ "<strong>" +  " lives saved" 
 					+ "</strong>" + ": " + result[1].toFixed(1) + "<br/>"
+					+ "<strong>" + "Original GrPC"
+					+ "</strong>" + ": $" + dataRow.govRevCap.toFixed(0) + "<br/>"
 					+ "<strong>" +  "Percentage GrPC increase"
 					+ "</strong>" + ": " + newGovRev.toFixed(2) + "%<br/>"
 					+ "<strong>" +  "Absolute extra revenue" 
 					+ "</strong>" + ": $" + newGovAbsRev.toFixed(2) + "M<br/>"
 					+ "<strong>" +  "Extra revenue per capita" 
-					+ "</strong>" + ": $" + newAdditionalPCGovRev.toFixed(0) + "<br/>";
+					+ "</strong>" + ": $" + newAdditionalPCGovRev.toFixed(0) + "<br/>"
+					+ "<strong>" +  "Per-capita cost of single life"
+					+ "</strong>" + ": $" + costs[0].toFixed(2) + "<br/>"
+					+ "<strong>" +  "Countrywide cost of single life" 
+					+ "</strong>" + ": $" + (costs[1] / 1E6).toFixed(0) + "M<br/>"
+					+ "<strong>" +  "Increase in GRpC required to save single life" 
+					+ "</strong>" + ": " + costs[2].toFixed(2) + "%<br/>";
 					
 					return text;
 				} else {
