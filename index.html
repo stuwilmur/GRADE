@@ -1,816 +1,835 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<title>G-LIST</title>
-	
-	<meta http-equiv="content-type" lang="en" content="text/html; charset=utf-8">
-	<link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
-	<link rel="icon" href="data:,">
-	<style>
-		body {
-			font-family: 'Open Sans', Helvetica, sans-serif;
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
-		}
-		
-		.all{
-			min-width : 100%;
-		}
-		
-		.menu {
-			float : left;
-			width : 350px;
-		}
-		
-		vis {
-			float : left;
-			margin-left : 10px;
-			margin-top : 10px;
-			width : 0px;
-			min-width : 0px;
-		}
-		
-		#vis {
-			float : left;
-			margin-left : 10px;
-			width : 0px;
-			min-width : 0px;
-		}
-		
-		.sliders
-		{
-			margin-top : 10px;
-			margin-bottom : 10px;
-		}
-		
-		select {
-	  
-	  margin-top: 20px;
-	  margin-bottom: 20px;
-	  padding: 5px 35px 5px 5px;
-	  font-size: 16px;
-	  border: 1px solid #ccc;
-	  height: 34px;
-	  font-family: 'Open Sans', Helvetica, sans-serif;
-	  -webkit-appearance: none;
-	  -moz-appearance: none;
-	  appearance: none;
-	}
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for Linux (vers 25 March 2009), see www.w3.org" />
 
-		.countries {
-			stroke: #fff;
-			stroke-width:1px;
-		}
+  <title>G-LIST</title>
+  <meta http-equiv="content-type" lang="en" content="text/html; charset=us-ascii"
+  xml:lang="en" />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans&amp;display=swap" rel=
+  "stylesheet" type="text/css" />
+  <link rel="icon" href="data:," />
+  <style type="text/css">
 
-		.countries:hover{
-			opacity: .7;
-		}
+                body {
+                        font-family: 'Open Sans', Helvetica, sans-serif;
 
-		.legendLinear text {
-			font-size: 9px;
-		}
+                }
+                
+                .all{
+                        min-width : 100%;
+                }
+                
+                .menu {
+                        float : left;
+                        width : 350px;
+                }
+                
+                vis {
+                        float : left;
+                        margin-left : 10px;
+                        margin-top : 10px;
+                        width : 0px;
+                        min-width : 0px;
+                }
+                
+                #vis {
+                        float : left;
+                        margin-left : 10px;
+                        width : 0px;
+                        min-width : 0px;
+                }
+                
+                .sliders
+                {
+                        margin-top : 10px;
+                        margin-bottom : 10px;
+                }
+                
+                select {
+          
+          margin-top: 20px;
+          margin-bottom: 20px;
+          padding: 5px 35px 5px 5px;
+          font-size: 16px;
+          border: 1px solid #ccc;
+          height: 34px;
+          font-family: 'Open Sans', Helvetica, sans-serif;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+        }
 
-		/*.d3-tip {
-			font-weight: bold;
-			padding: 10px 15px;
-			background: rgba(255, 255, 255, 0.5);
-			color: #0099FF;
-			border-radius: 2px;
-		}*/
+                .countries {
+                        stroke: #fff;
+                        stroke-width:1px;
+                }
 
-		svg {
-			display: block;
-			margin: auto;
-		}
+                .countries:hover{
+                        opacity: .7;
+                }
 
-		.slidecontainer {
-		  width: 100%;
-		  margin-top : 30px;
-		  margin-bottom : 30px;
-		}
+                .legendLinear text {
+                        font-size: 9px;
+                }
 
-		.slider {
-		  -webkit-appearance: none;
-		  width: 100%;
-		  height: 10px;
-		  background: #d3d3d3;
-		  outline: none;
-		  opacity: 0.7;
-		  -webkit-transition: .2s;
-		  transition: opacity .2s;
-		}
+                /*.d3-tip {
+                        font-weight: bold;
+                        padding: 10px 15px;
+                        background: rgba(255, 255, 255, 0.5);
+                        color: #0099FF;
+                        border-radius: 2px;
+                }*/
 
-		.slider:hover {
-		  opacity: 1;
-		}
+                svg {
+                        display: block;
+                        margin: auto;
+                }
 
-		.slider::-webkit-slider-thumb {
-		  -webkit-appearance: none;
-		  appearance: none;
-		  width: 25px;
-		  height: 25px;
-		  border-radius: 15px;
-		  background: #0099FF;
-		  cursor: pointer;
-		  border: none;
-		}
+                .slidecontainer {
+                  width: 100%;
+                  margin-top : 30px;
+                  margin-bottom : 30px;
+                }
 
-		.slider::-moz-range-thumb {
-		  width: 25px;
-		  height: 25px;
-		  border-radius: 15px;
-		  background: #0099FF;
-		  cursor: pointer;
-		  border: none;
-		}
-		
-		[type=radio] { 
-		position: absolute;
-		opacity: 0;
-		width: 0;
-		height: 0;
-		}
+                .slider {
+                  -webkit-appearance: none;
+                  width: 100%;
+                  height: 10px;
+                  background: #d3d3d3;
+                  outline: none;
+                  opacity: 0.7;
+                  -webkit-transition: .2s;
+                  transition: opacity .2s;
+                }
 
-		/* IMAGE STYLES */
-		[type=radio] + img {
-		cursor: pointer;
-		opacity : .50;
-		}
+                .slider:hover {
+                  opacity: 1;
+                }
 
-		/* CHECKED STYLES */
-		[type=radio]:checked + img {
-		opacity : 1.00;
-		}
-		
-		#revDiv{
-			display : block;
-		}
-		
-		#absRevDiv{
-			display : none;
-		}
-		
-		#pcRevDiv{
-			display : none;
-		}
-		
-		
-		.inline-div {
-			display: block;
-		}
+                .slider::-webkit-slider-thumb {
+                  -webkit-appearance: none;
+                  appearance: none;
+                  width: 25px;
+                  height: 25px;
+                  border-radius: 15px;
+                  background: #0099FF;
+                  cursor: pointer;
+                  border: none;
+                }
 
-		h2
-		{
-			display: inline-block;
-		}
-		h3
-		{
-			font-size: 90%;
-			display: inline-block;
-			background-color: #e09900;
-			border-width: 10px;
-			border-style: solid;
-			border-radius: 0px;
-			border-color: #e09900;
-			margin-left: 20px;
-			color: white;
-		}
-		
-		a{
-			text-decoration:none;
-		}
+                .slider::-moz-range-thumb {
+                  width: 25px;
+                  height: 25px;
+                  border-radius: 15px;
+                  background: #0099FF;
+                  cursor: pointer;
+                  border: none;
+                }
+                
+                [type=radio] { 
+                position: absolute;
+                opacity: 0;
+                width: 0;
+                height: 0;
+                }
 
-		.label {
-			padding: 1px 3px 2px;
-			font-size: 90%;
-			font-weight: bold;
-			color: #ffffff;
-			white-space: nowrap;
-			background-color: #e09900;
-			-webkit-border-radius: 0px;
-			-moz-border-radius: 0px;
-			border-radius: 0px;
-			border: solid;
-			border-color: #e09900;
-			border-width: 10px;
-			text-decoration: none;
-		}
-		.label.success {
-			background-color: #e09900;
-		}
+                /* IMAGE STYLES */
+                [type=radio] + img {
+                cursor: pointer;
+                opacity : .50;
+                }
 
-		.item a h2.new-label span{
-		  position: relative;
-		  content: 'NEW'
-		}
-		.item:hover a h2.new-label span{
-		  display: none;
-		}
-		.item:hover a h2.new-label:after{
-		  content: 'G-LIST Homepage \2190';
-		}
+                /* CHECKED STYLES */
+                [type=radio]:checked + img {
+                opacity : 1.00;
+                }
+                
+                #revDiv{
+                        display : block;
+                }
+                
+                #absRevDiv{
+                        display : none;
+                }
+                
+                #pcRevDiv{
+                        display : none;
+                }
+                
+                
+                .inline-div {
+                        display: block;
+                }
 
-		.label:hover {
-		  -webkit-border-radius: 3px;
-		  -moz-border-radius: 3px;
-		  border-radius: 3px;
-		}
-		
-		.ar { float:right }
-		
-		.tooltip{
-			font-size : 100%;
-		}
-		
-		h1.tooltip{
-			color : #0099FF;
-			font-size : 150%;
-		}
-		
-		h2.tooltip{
-			color : #000000;
-			font-size : 120%;
-		}
-		
-		.tooltip strong
-		{
-			font-weight : normal;
-		}
-		
+                h2
+                {
+                        display: inline-block;
+                }
+                h3
+                {
+                        font-size: 90%;
+                        display: inline-block;
+                        background-color: #e09900;
+                        border-width: 10px;
+                        border-style: solid;
+                        border-radius: 0px;
+                        border-color: #e09900;
+                        margin-left: 20px;
+                        color: white;
+                }
+                
+                a{
+                        text-decoration:none;
+                }
 
-	</style>
-	</head>
-	<body>
-	
-		<script src="https://d3js.org/d3.v3.min.js"></script>
-		<script src="https://d3js.org/queue.v1.min.js"></script>
-		<script src="https://d3js.org/topojson.v1.min.js"></script>
-		<script src="tooltip.js"></script>
-		<script src="d3-legend.min.js"></script>
-	
+                .label {
+                        padding: 1px 3px 2px;
+                        font-size: 90%;
+                        font-weight: bold;
+                        color: #ffffff;
+                        white-space: nowrap;
+                        background-color: #e09900;
+                        -webkit-border-radius: 0px;
+                        -moz-border-radius: 0px;
+                        border-radius: 0px;
+                        border: solid;
+                        border-color: #e09900;
+                        border-width: 10px;
+                        text-decoration: none;
+                }
+                .label.success {
+                        background-color: #e09900;
+                }
+
+                .item a h2.new-label span{
+                  position: relative;
+                  content: 'NEW'
+                }
+                .item:hover a h2.new-label span{
+                  display: none;
+                }
+                .item:hover a h2.new-label:after{
+                  content: 'G-LIST Homepage \2190';
+                }
+
+                .label:hover {
+                  -webkit-border-radius: 3px;
+                  -moz-border-radius: 3px;
+                  border-radius: 3px;
+                }
+                
+                .ar { float:right }
+                
+                .tooltip{
+                        font-size : 100%;
+                }
+                
+                h1.tooltip{
+                        color : #0099FF;
+                        font-size : 150%;
+                }
+                
+                h2.tooltip{
+                        color : #000000;
+                        font-size : 120%;
+                }
+                
+                .tooltip strong
+                {
+                        font-weight : normal;
+                }
+                
 
 
-		<div class="all">
-			<div class="menu">
-					<div class="inline-div">
-			
-			<div class="item">
-				<a href = http://med.st-andrews.ac.uk/glist/maps/interactive-map-of-u5-mortality/>
-					<h2 class="label success new-label"><span class="align">G-LIST Homepage</span></h2>
-				</a>	
-			</div>
+  </style>
+</head>
+
+<body>
+  <script src="https://d3js.org/d3.v3.min.js" type="text/javascript">
+</script><script src="https://d3js.org/queue.v1.min.js" type="text/javascript">
+</script><script src="https://d3js.org/topojson.v1.min.js" type="text/javascript">
+</script><script src="tooltip.js" type="text/javascript">
+</script><script src="d3-legend.min.js" type="text/javascript">
+</script>
+
+  <div class="all">
+    <div class="menu">
+      <div class="inline-div">
+		<div class="item">
+			<a href = http://med.st-andrews.ac.uk/glist/maps/interactive-map-of-u5-mortality/>
+				<h2 class="label success new-label"><span class="align">G-LIST Homepage</span></h2>
+			</a>	
 		</div>
-		<h2>G-LIST</h2>
-		<p>
-			Hover over a country to show information.
-		<p>
-				<div>
-					<select id = "countrylist" name="country"></select>
-					<p>
-					Specify additoinal revenue as:
-					</p>
-					<select id = "methodlist" name="method">
-						   
-						  <option value="percentage">Percentage of gov. rev. per capita</option>
-						  <option value="absolute">Absolute extra revenue</option>
-						   <option value="pc">Additional revenue per capita</option>
-					</select>
-				</div>
-				
-				<div class="sliders">
-					<div class = "slidecontainer">
-					<div id = "revDiv">
-						<input type="range" name="revSlider" id=revSlider class = "slider" min="0" max="100" value="0">
-						<p>Additional Revenue (% of GRpC): <span id="revenueVal">0&#37;</span></p>
-					</div>
-					<div id = "absRevDiv">
-						<input type="range" name="absRevSlider" id=absRevSlider class = "slider" min="0" max="1000" value="0">
-						<p>Additional Revenue (Millions of USD): <span id="absRevenueVal">$0M</span></p>
-					</div>
-					<div id = "pcRevDiv">
-						<input type="range" name="pcRevSlider" id=pcRevSlider class = "slider" min="0" max="1000" value="0">
-						<p>Additional Revenue (USD per capita): <span id="perCapitaRevenueVal">$0</span></p>
-					</div>
-					</div>
-				  <div class = "slidecontainer">
-						<input type="range" name="yearSlider" id=yearSlider class = "slider" min="1980" max="2016" value="2016">
-						<p>Year: <span id="yearVal"></span></p>
-				  </div>
-				</div>
-				
-				<label>
-					<input class = "outcomes" type="radio" name="test" value="mortality" checked>
-					<img src="img/u5m.png" width = 100>
-				</label>
-				<label>
-					<input class = "outcomes" type="radio" name="test" value="matMortality">
-					<img src="img/mmr.png" width = 100>
-				</label>
-				<!--
-				<label>
-					<input class = "outcomes" type="radio" name="test" value="PScompletion">
-					<img src="img/E_SDG goals_icons-individual-rgb-04.png" width = 100>
-				</label>
-				<label>
-					<input class = "outcomes" type="radio" name="test" value="Immunisation">
-					<img src="img/E_SDG goals_icons-individual-rgb-06.png" width = 100>
-				</label>
-				-->
+	  </div>
 
-				<div>
-					<p><span id="countrytext"></span></p>
-				</div>
-			</div>		
-			<div id="vis">
-			</div>
-		</div>
-		
-		<script>
-			var width = 1500;
-			var height = 700;
-			var	subheight = 100;
-			var legendCells = 10;
-			var transitionTime = 500;
+      <h2>G-LIST</h2>
 
-			var svg = d3.select('#vis').append('svg')
-				.attr('width', width)
-				.attr('height', height)
-				.call(d3.behavior.zoom()
-				.on("zoom", redraw))
-				.append("g");
-				
-			var svg2 = d3.select('#vis').append('svg')
-				.attr('width', width)
-				.attr('height', subheight)
-				.call(d3.behavior.zoom()
-				.on("zoom", redraw))
-				.append("g");
+      <p>Hover over a country to show information.</p>
 
-			function redraw() {
-				svg.attr("transform", "translate(" + d3.event.translate 
-				+ ")scale(" + d3.event.scale + ")");
-			}
+      <div>
+        <select id="countrylist" name="country">
+          </select>
 
-			var projection = d3.geo.mercator()
-				.scale(225)
-				.translate([width / 2, height / 2]);
+        <p>Specify additoinal revenue as:</p><select id="methodlist" name="method">
+          <option value="percentage">
+            Percentage of gov. rev. per capita
+          </option>
 
-			var path = d3.geo.path()
-				.projection(projection);
+          <option value="absolute">
+            Absolute extra revenue
+          </option>
 
-			var countryById = d3.map();
-			var legendLinear;
+          <option value="pc">
+            Additional revenue per capita
+          </option>
+        </select>
+      </div>
 
-			var govRevenue = 0;
-			var absGovRev = 0;
-			var pcGovRev = 0;
-			var year = 2016;
-			var country = "$-ALL";
-			var method = "percentage"
-			
-			// **** add or update outcomes here ****
-			var outcomesList = [
-				[ "mortality",					
-					{ 
-						name : "U5 Mortality", 	
-						loCol : "#279b48", 		
-						hiCol : "#a61414",		
-						desc: "Under-five mortality (per 1000 live births)"}], 
-				[ "matMortality",					
-					{ 
-						name : "Maternal Mortality", 	
-						loCol : "#279b48", 		
-						hiCol : "#a61414",		
-						desc: "Maternal mortality (per 100,000 births)"}], 
-				/*[ "PScompletion",
-					{
-						name : "Primary School Completion Rate", 
-						loCol : "#85c1e9", 
-						hiCol : "#c31f33",
-						fixedExtent : [0,100],
-						desc : "Primary School Completion (%)"}],
-				[ "Immunisation",							// column heading in csv file
-					{					
-						name : "Immunisation Rate", 		// Name (full text)
-						loCol : "#a93226", 					// Colour for low end of scale
-						hiCol : "#00aed9",					// Colour for high end of scale
-						fixedExtent : [0,100],				// OPTIONAL: fixed scale limits (else automatic)
-						desc : "Immunisation Rate (%)"}]	// Description
-				*/
-			];
-			
-			let outcomesMap = new Map(outcomesList);
-			var outcome = "mortality";
-			var colorScale = d3.scale.linear().
-			range([outcomesMap.get(outcome).loCol, outcomesMap.get(outcome).hiCol]).
-			interpolate(d3.interpolateLab);
-			
-			const cLIC  = 1;
-			const cLMIC  = 2;
-			const cUMIC  = 3;		
-			const cHIC  = 4;
-			
-			// **** edit here if the coefficients are to be updated ****
-			const betaU5M = 1472;
-			const betaMMR = 576.6;
+      <div class="sliders">
+        <div class="slidecontainer">
+          <div id="revDiv">
+            <input type="range" name="revSlider" id="revSlider" class="slider" min="0"
+            max="100" value="0" />
 
-			queue()
-				.defer(d3.json, "countries.json")
-				.defer(d3.csv, "lives saved data.csv", typeAndSet) // process
-				.await(loaded);
-				
-			function getRevenue(d, m)
-			{
-				if (m == "percentage")
-				{
-					var newAbsRev = (d.govRevCap * (govRevenue)) * d.population;
-					var additionalPerCapita = d.govRevCap * govRevenue;
-					return [govRevenue, newAbsRev, additionalPerCapita];
-				}
-				else if (m == "pc")
-				{
-					var newGRPC = d.govRevCap + pcGovRev;
-					var newGovRev = newGRPC / d.govRevCap - 1;
-					var newAbsRev = (d.govRevCap * (newGovRev)) * d.population;
-					return [newGovRev, newAbsRev, pcGovRev];
-				}
-				else
-				{
-					var newGRPC = d.govRevCap + absGovRev / d.population;
-					var newGovRev = newGRPC / d.govRevCap - 1;
-					var additionalPerCapita = absGovRev / d.population;
-					return [newGovRev, absGovRev, additionalPerCapita];
-				}
-			}
+            <p>Additional Revenue (% of GRpC): <span id="revenueVal">0%</span></p>
+          </div>
 
+          <div id="absRevDiv">
+            <input type="range" name="absRevSlider" id="absRevSlider" class="slider" min=
+            "0" max="1000" value="0" />
 
-			function computeResult(d, type)
-			{
-				// returns [improved outome, lives saved, original outome]
-				
-				var computedRevenue = getRevenue(d, method);
-				
-				var increase = computedRevenue[0];
-				if (type == "mortality")
-				{
-					if (d.mortality > 0)
-					{
-						var effectOnU5m = 0;
-						if (d.govRevCap > 0 )
-						{
-							effectOnU5m = Math.min(betaU5M / d.govRevCap  * increase, d.mortality)
-						}
-						var livesSaved = effectOnU5m * d.u5Pop / 1000;
-						var u5m = d.mortality - effectOnU5m;
-						return [u5m, d.govRevCap > 0 ? livesSaved : NaN, +d.mortality];
-					}
-					else
-						return [NaN, NaN, NaN];
-					
-				}
-				else if (type == "matMortality" )
-				{
-					if (d.matMortality > 0)
-					{
-						var effectOnMmr = 0;
-						if ( d.govRevCap > 0 )
-						{
-							effectOnMmr = Math.min(betaMMR / Math.pow(Math.log(d.govRevCap), 2.0) * increase, d.matMortality);
-						}
-						var livesSaved = effectOnMmr * d.BIRTHS / 100000;
-						var mmr = d.matMortality - effectOnMmr;
-						return [mmr, d.govRevCap > 0 ? livesSaved : NaN, +d.matMortality];
-					}
-					else
-					{
-						return [NaN, NaN, NaN]
-					}
-				}
-				else if(type == "PScompletion")
-				{
-					
-				}
-				else if(type == "Immunisation")
-				{
-					
-				}
-			}
-			
-			function computeCostPerLife(d, type)
-			{
-				var costPerCapita = NaN;
-				var pop = NaN;
-				
-				if (type == "mortality")
-				{
-					pop = d.u5Pop
-				}
-				else if (type == "matMortality")
-				{
-					pop = d.BIRTHS;
-				}
-				if (pop > 0 & d.govRevCap > 0)
-				{
-					costPerCapita = 1000 * d.govRevCap ** 2 / (betaU5M * pop);
-					console.log(costPerCapita);
-				}
-			
-				var costAbsolute = costPerCapita * d.population;
-				var costPCRatio = costPerCapita / d.govRevCap;
-				
-				return [costPerCapita, costAbsolute, costPCRatio];
-			}
-			
+            <p>Additional Revenue (Millions of USD): <span id=
+            "absRevenueVal">$0M</span></p>
+          </div>
 
-			function typeAndSet(d) {
-				d.income = d.INCOME;
-				d.govRevCap = +d.GOVREVPERCAP;
-				d.deaths = d.U5DEATHS;
-				d.u5Pop = d.U5POP;
-				d.u5Deaths = d.U5DEATHS;
-				d.births = d.BIRTHS;
-				d.matDeaths = d.MATDEATHS;
-				d.mortality = d.U5MORTALITY;
-				d.matMortality = d.MATMORTALITY;
-				d.population = +d.POPULATION;
+          <div id="pcRevDiv">
+            <input type="range" name="pcRevSlider" id="pcRevSlider" class="slider" min=
+            "0" max="1000" value="0" />
 
-				countryById.set(d.ISO + d.YEAR, d);
-				return d;
-			}
+            <p>Additional Revenue (USD per capita): <span id=
+            "perCapitaRevenueVal">$0</span></p>
+          </div>
+        </div>
 
-			function getColor(d) {
-				var dataRow = countryById.get(d.id + year);
-				if (dataRow) {
-					var results = computeResult(dataRow, outcome);
-					if (country == "$-ALL" || country == d.id	
-					|| country == "$-LIC" 	&& dataRow.income == cLIC 
-					|| country == "$-LMIC" && dataRow.income == cLMIC
-					|| country == "$-UMIC" && dataRow.income == cUMIC
-					|| country == "$-HIC" 	&& dataRow.income == cHIC)
-						return colorScale(results[0]);
-					else
-						return "rgba(0, 0, 0, 0.3)";
-				} else {
-					return "rgba(0, 0, 0, 0.7)";
-				}
-			}
+        <div class="slidecontainer">
+          <input type="range" name="yearSlider" id="yearSlider" class="slider" min="1980"
+          max="2016" value="2016" />
 
-			function getText(d) {
-				if (d.id[0] == "$")
-				{
-					return "";
-				}
-				var dataRow = countryById.get(d.id + year);
-				if (dataRow) {
-					var result = computeResult(dataRow, outcome);
-					var costs = computeCostPerLife(dataRow, outcome);
-					console.log(costs);
-					var revenues = getRevenue(dataRow, method);
-					var newGovRev = 100 * revenues[0];
-					var newGovAbsRev = revenues[1] / 1E6;
-					var newAdditionalPCGovRev = revenues[2];
-					var text = d.hasOwnProperty("properties") ? "<h1 class='tooltip'> " + d.properties.name + "</h2 class='tooltip'><br/>" : "";
-					var delta = result[0] - result[2];
-					text = text
-					+ "<h2 class='tooltip'> Revenue </h2></br>"
-					+ "<strong>" + "Original GrPC"
-					+ "</strong>" + ": <span class='ar'>$" + dataRow.govRevCap.toFixed(0) + "</span><br/>"
-					+ "<strong>" +  "Percentage GrPC increase"
-					+ "</strong>" + ": <span class='ar'>" + newGovRev.toFixed(2) + "%</span><br/>"
-					+ "<strong>" +  "Absolute extra revenue" 
-					+ "</strong>" + ": <span class='ar'>$" + newGovAbsRev.toFixed(2) + "M</span><br/>"
-					+ "<strong>" +  "Extra revenue per capita" 
-					+ "</strong>" + ": <span class='ar'>$" + newAdditionalPCGovRev.toFixed(0) + "</span><br/>"
-					+ "<h2 class='tooltip'>" + outcomesMap.get(outcome).name + " </h2></br>"
-					+ "<strong> Original " + outcomesMap.get(outcome).name 
-					+ "</strong>" + ": <span class='ar'>" + result[2].toFixed(3) + "</span><br/>";
-					text = text	+ "<strong> Improved " + outcomesMap.get(outcome).name 
-					+ "</strong>" + ": <span class='ar'>" + result[0].toFixed(3) + "</span><br/>"
-					text = text	+ "<strong> Improvement in " + outcomesMap.get(outcome).name 
-					+ "</strong>" + ": <span class='ar'>" + delta.toFixed(3) + "</span><br/>" 
-					+ "<strong>" +  " lives saved" 
-					+ "</strong>" + ":<span class='ar'> " + result[1].toFixed(1) + "</span><br/>"
-					+ "<h2 class='tooltip'> Cost per life saved </h2></br>"
-					+ "<strong>" +  "Per-capita cost of single life"
-					+ "</strong>" + ": <span class='ar'>$" + costs[0].toFixed(2) + "</span><br/>"
-					+ "<strong>" +  "Total extra revenue" 
-					+ "</strong>" + ": <span class='ar'>$" + (costs[1] / 1E6).toFixed(0) + "M</span><br/>"
-					+ "<strong>" +  "Increase in GRpC" 
-					+ "</strong>" + ": <span class='ar'>" + costs[2].toFixed(2) + "%</span><br/>";
-					
-					return text;
-				} else {
-					if (d.hasOwnProperty("properties"))
-						return "<strong>" + d.properties.name + "</strong>" + ": No data";
-					else
-						return "<strong>No data</strong>";
-				}
-			}
+          <p>Year: <span id="yearVal"></span></p>
+        </div>
+      </div><label><input class="outcomes" type="radio" name="test" value="mortality"
+      checked="checked" /> <img src="img/u5m.png" width="100" /></label>
+      <label><input class="outcomes" type="radio" name="test" value="matMortality" />
+      <img src="img/mmr.png" width="100" /></label> <!--
+                                <label>
+                                        <input class = "outcomes" type="radio" name="test" value="PScompletion">
+                                        <img src="img/E_SDG goals_icons-individual-rgb-04.png" width = 100>
+                                </label>
+                                <label>
+                                        <input class = "outcomes" type="radio" name="test" value="Immunisation">
+                                        <img src="img/E_SDG goals_icons-individual-rgb-06.png" width = 100>
+                                </label>
+                                -->
 
-			function loaded(error, countries, mortalityRate) {
+      <div>
+        <p><span id="countrytext"></span></p>
+      </div>
+    </div>
 
-				outcomesMap.forEach(function(v, k){
-					outcomesMap.get(k).extent = d3.extent(mortalityRate, function(d) {
-					return parseFloat(d[k]);
-					});
-				})
-				
-				colorScale.domain(d3.extent(mortalityRate, function(d) {
-				return parseFloat(d[outcome]);
-				}));
-				
-				var countries = topojson.feature(countries, countries.objects.units).features;
+    <div id="vis"></div>
+  </div><script type="text/javascript">
+//<![CDATA[
+                        var width = 1500;
+                        var height = 700;
+                        var     subheight = 100;
+                        var legendCells = 10;
+                        var transitionTime = 500;
 
-				svg.selectAll('path.countries')
-					.data(countries)
-					.enter()
-					.append('path')
-					.attr('class', 'countries')
-					.attr('d', path)
-					.attr('fill', function(d,i) {
-						return getColor(d);
-					})
-					.call(d3.helper.tooltip(
-						function(d, i){
-							return getText(d);
-						})); // tooltip based on an example from Roger Veciana: http://bl.ocks.org/rveciana/5181105    
+                        var svg = d3.select('#vis').append('svg')
+                                .attr('width', width)
+                                .attr('height', height)
+                                .call(d3.behavior.zoom()
+                                .on("zoom", redraw))
+                                .append("g");
+                                
+                        var svg2 = d3.select('#vis').append('svg')
+                                .attr('width', width)
+                                .attr('height', subheight)
+                                .call(d3.behavior.zoom()
+                                .on("zoom", redraw))
+                                .append("g");
 
-				svg2.append("g")
-				  .attr("class", "legendLinear")
-				  .attr("transform", "translate(0,20)");
+                        function redraw() {
+                                svg.attr("transform", "translate(" + d3.event.translate 
+                                + ")scale(" + d3.event.scale + ")");
+                        }
 
-				legendLinear = d3.legend.color()
-				  .shapeWidth(75)
-				  .orient('horizontal')
-				  .scale(colorScale)
-				  .cells(legendCells);
+                        var projection = d3.geo.mercator()
+                                .scale(225)
+                                .translate([width / 2, height / 2]);
 
-				svg2.select(".legendLinear")
-				  .call(legendLinear);
-				  
-				svg2.append("text")
-					.attr("x", 0)             
-					.attr("y", 15)
-					.text(outcomesMap.get(outcome).desc);
-				  
-				d3.select("#revSlider").on("change", function(d){
-				  govRevenue = this.value / 100.0;
-				}); 
-				d3.select("#absRevSlider").on("change", function(){
-				  absGovRev = this.value * 1E6;
-				})
-				d3.select("#pcRevSlider").on("change", function(){
-				  pcGovRev = this.value * 100;
-				});
-				
-			function colourCountries()
-			{
-				   svg.selectAll('path.countries').transition()  
-				  .duration(transitionTime)  
-				  .attr('fill', function(d) {
-					return getColor(d);
-				  })
-			}
-			
-			function updateLegend()
-			{
-				var theOutcome = outcomesMap.get(outcome)
-				var domain = theOutcome.hasOwnProperty("fixedExtent") ? theOutcome.fixedExtent : theOutcome.extent;
-				colorScale.range([theOutcome.loCol, theOutcome.hiCol])
-				.domain(domain);
-				legendLinear.scale(colorScale);
-				
-				svg2.select(".legendLinear").remove();
-				
-				svg2.append("g")
-				.attr("class", "legendLinear")
-				.attr("transform", "translate(0,20)");
-				
-				svg2.select(".legendLinear")
-				.call(legendLinear);
-				
-				svg2.select("text")
-				.text(theOutcome.desc);
-			}
-			
-			function updateCountries()
-			{
-				var d = {"id" : country};
-				d3.select("#countrytext").
-				html(getText(d));
-				colourCountries();
-			}
-			
-			function initMenus()
-			{
-				countries.sort(function(a,b)
-				{
-					 if (a.properties.name < b.properties.name) //sort string ascending
-						return -1;
-					if (a.properties.name > b.properties.name)
-						return 1;
-					return 0; //default return value (no sorting)
-				});
-				
-				// add some "special" countries representing aggregate options.
-				countries.unshift({
-					id: "$-HIC", 
-					properties : {name : "High-income countries"}});
-				countries.unshift({
-					id: "$-UMIC", 
-					properties : {name : "Upper-middle-income countries"}});
-				countries.unshift({
-					id: "$-LMIC", 
-					properties : {name : "Lower-middle-income countries"}});
-				countries.unshift({
-					id: "$-LIC", 
-					properties : {name : "Low-income countries"}});
-				countries.unshift({
-					id: "$-ALL", 
-					properties : {name : "Show all countries"}});
-			
-				 d3.select('#countrylist')
-				.on('change', function(d) {
-					country = this.options[this.selectedIndex].value;
-					updateCountries();
-				})
-				.selectAll('option')
-				.data(countries)
-				.enter()
-				.append('option')
-				.attr('value', function(d) {return d.id;})
-				.text(function(d) {return d.properties.name;});	
-				
-				d3.select("#methodlist")
-				.on("change", function(d) {
-					method = this.options[this.selectedIndex].value;
-					if (method == "percentage")
-					{
-						d3.select("#revDiv")
-						.style("display", "block")
-						d3.select("#absRevDiv")
-						.style("display", "none")
-						d3.select("#pcRevDiv")
-						.style("display", "none")
-					}
-					else if (method == "pc")
-					{
-						d3.select("#revDiv")
-						.style("display", "none")
-						d3.select("#absRevDiv")
-						.style("display", "none")
-						d3.select("#pcRevDiv")
-						.style("display", "block")
-					}
-					else
-					{
-						d3.select("#revDiv")
-						.style("display", "none")
-						d3.select("#absRevDiv")
-						.style("display", "block")
-						d3.select("#pcRevDiv")
-						.style("display", "none")
-					}
-					updateCountries();
-				})
-			}
+                        var path = d3.geo.path()
+                                .projection(projection);
 
-			initMenus();
-			d3.select("#revenueVal").text(govRevenue);
-			d3.select("#yearVal").text(year);
+                        var countryById = d3.map();
+                        var legendLinear;
+
+                        var govRevenue = 0;
+                        var absGovRev = 0;
+                        var pcGovRev = 0;
+                        var year = 2016;
+                        var country = "$-ALL";
+                        var method = "percentage"
+                        
+                        // **** add or update outcomes here ****
+                        var outcomesList = [
+                                [ "mortality",                                  
+                                        { 
+                                                name : "U5 Mortality",  
+                                                loCol : "#279b48",              
+                                                hiCol : "#a61414",              
+                                                desc: "Under-five mortality (per 1000 live births)"}], 
+                                [ "matMortality",                                       
+                                        { 
+                                                name : "Maternal Mortality",    
+                                                loCol : "#279b48",              
+                                                hiCol : "#a61414",              
+                                                desc: "Maternal mortality (per 100,000 births)"}], 
+                                /*[ "PScompletion",
+                                        {
+                                                name : "Primary School Completion Rate", 
+                                                loCol : "#85c1e9", 
+                                                hiCol : "#c31f33",
+                                                fixedExtent : [0,100],
+                                                desc : "Primary School Completion (%)"}],
+                                [ "Immunisation",                                                       // column heading in csv file
+                                        {                                       
+                                                name : "Immunisation Rate",             // Name (full text)
+                                                loCol : "#a93226",                                      // Colour for low end of scale
+                                                hiCol : "#00aed9",                                      // Colour for high end of scale
+                                                fixedExtent : [0,100],                          // OPTIONAL: fixed scale limits (else automatic)
+                                                desc : "Immunisation Rate (%)"}]        // Description
+                                */
+                        ];
+                        
+                        let outcomesMap = new Map(outcomesList);
+                        var outcome = "mortality";
+                        var colorScale = d3.scale.linear().
+                        range([outcomesMap.get(outcome).loCol, outcomesMap.get(outcome).hiCol]).
+                        interpolate(d3.interpolateLab);
+                        
+                        const cLIC  = 1;
+                        const cLMIC  = 2;
+                        const cUMIC  = 3;               
+                        const cHIC  = 4;
+                        
+                        // **** edit here if the coefficients are to be updated ****
+                        const betaU5M = 1472;
+                        const betaMMR = 576.6;
+
+                        queue()
+                                .defer(d3.json, "countries.json")
+                                .defer(d3.csv, "lives saved data.csv", typeAndSet) // process
+                                .await(loaded);
+                                
+                        function getRevenue(d, m)
+                        {
+                                if (m == "percentage")
+                                {
+                                        var newAbsRev = (d.govRevCap * (govRevenue)) * d.population;
+                                        var additionalPerCapita = d.govRevCap * govRevenue;
+                                        return [govRevenue, newAbsRev, additionalPerCapita];
+                                }
+                                else if (m == "pc")
+                                {
+                                        var newGRPC = d.govRevCap + pcGovRev;
+                                        var newGovRev = newGRPC / d.govRevCap - 1;
+                                        var newAbsRev = (d.govRevCap * (newGovRev)) * d.population;
+                                        return [newGovRev, newAbsRev, pcGovRev];
+                                }
+                                else
+                                {
+                                        var newGRPC = d.govRevCap + absGovRev / d.population;
+                                        var newGovRev = newGRPC / d.govRevCap - 1;
+                                        var additionalPerCapita = absGovRev / d.population;
+                                        return [newGovRev, absGovRev, additionalPerCapita];
+                                }
+                        }
 
 
-			d3.select("#revSlider").on("input", function(d){
-				govRevenue = this.value / 100.0;
-				d3.select("#revenueVal").text(Math.round(govRevenue * 100) + " %");
-				updateCountries();
-			});
-			
-			d3.select("#absRevSlider").on("input", function(d){
-				absGovRev = this.value * 1E6;
-				d3.select("#absRevenueVal").text("$" + Math.round(absGovRev / 1E6) + "M");
-				updateCountries();
-			});
-			
-			d3.select("#pcRevSlider").on("input", function(d){
-				pcGovRev = this.value * 1;
-				d3.select("#perCapitaRevenueVal").text("$" + Math.round(pcGovRev));
-				updateCountries();
-			});
+                        function computeResult(d, type)
+                        {
+                                // returns [improved outome, lives saved, original outome]
+                                
+                                var computedRevenue = getRevenue(d, method);
+                                
+                                var increase = computedRevenue[0];
+                                if (type == "mortality")
+                                {
+                                        if (d.mortality > 0)
+                                        {
+                                                var effectOnU5m = 0;
+                                                if (d.govRevCap > 0 )
+                                                {
+                                                        effectOnU5m = Math.min(betaU5M / d.govRevCap  * increase, d.mortality)
+                                                }
+                                                var livesSaved = effectOnU5m * d.u5Pop / 1000;
+                                                var u5m = d.mortality - effectOnU5m;
+                                                return [u5m, d.govRevCap > 0 ? livesSaved : NaN, +d.mortality];
+                                        }
+                                        else
+                                                return [NaN, NaN, NaN];
+                                        
+                                }
+                                else if (type == "matMortality" )
+                                {
+                                        if (d.matMortality > 0)
+                                        {
+                                                var effectOnMmr = 0;
+                                                if ( d.govRevCap > 0 )
+                                                {
+                                                        effectOnMmr = Math.min(betaMMR / Math.pow(Math.log(d.govRevCap), 2.0) * increase, d.matMortality);
+                                                }
+                                                var livesSaved = effectOnMmr * d.BIRTHS / 100000;
+                                                var mmr = d.matMortality - effectOnMmr;
+                                                return [mmr, d.govRevCap > 0 ? livesSaved : NaN, +d.matMortality];
+                                        }
+                                        else
+                                        {
+                                                return [NaN, NaN, NaN]
+                                        }
+                                }
+                                else if(type == "PScompletion")
+                                {
+                                        
+                                }
+                                else if(type == "Immunisation")
+                                {
+                                        
+                                }
+                        }
+                        
+                        function computeCostPerLife(d, type)
+                        {
+                                var costPerCapita = NaN;
+                                var pop = NaN;
+                                
+                                if (type == "mortality")
+                                {
+                                        pop = d.u5Pop
+                                }
+                                else if (type == "matMortality")
+                                {
+                                        pop = d.BIRTHS;
+                                }
+                                if (pop > 0 & d.govRevCap > 0)
+                                {
+                                        costPerCapita = 1000 * d.govRevCap ** 2 / (betaU5M * pop);
+                                        console.log(costPerCapita);
+                                }
+                        
+                                var costAbsolute = costPerCapita * d.population;
+                                var costPCRatio = costPerCapita / d.govRevCap;
+                                
+                                return [costPerCapita, costAbsolute, costPCRatio];
+                        }
+                        
 
-			d3.select("#yearSlider").on("input", function(d){
-				year = this.value;
-				d3.select("#yearVal").text(year);
-				updateCountries();
-			});
-			
-			d3.selectAll(".outcomes").on("input", function(d){
-				outcome = this.value;
-				updateLegend();
-				updateCountries();
-			});
+                        function typeAndSet(d) {
+                                d.income = d.INCOME;
+                                d.govRevCap = +d.GOVREVPERCAP;
+                                d.deaths = d.U5DEATHS;
+                                d.u5Pop = d.U5POP;
+                                d.u5Deaths = d.U5DEATHS;
+                                d.births = d.BIRTHS;
+                                d.matDeaths = d.MATDEATHS;
+                                d.mortality = d.U5MORTALITY;
+                                d.matMortality = d.MATMORTALITY;
+                                d.population = +d.POPULATION;
 
-			}
+                                countryById.set(d.ISO + d.YEAR, d);
+                                return d;
+                        }
 
-		</script>
-	</body>
+                        function getColor(d) {
+                                var dataRow = countryById.get(d.id + year);
+                                if (dataRow) {
+                                        var results = computeResult(dataRow, outcome);
+                                        if (country == "$-ALL" || country == d.id       
+                                        || country == "$-LIC"   && dataRow.income == cLIC 
+                                        || country == "$-LMIC" && dataRow.income == cLMIC
+                                        || country == "$-UMIC" && dataRow.income == cUMIC
+                                        || country == "$-HIC"   && dataRow.income == cHIC)
+                                                return colorScale(results[0]);
+                                        else
+                                                return "rgba(0, 0, 0, 0.3)";
+                                } else {
+                                        return "rgba(0, 0, 0, 0.7)";
+                                }
+                        }
+
+                        function getText(d) {
+                                if (d.id[0] == "$")
+                                {
+                                        return "";
+                                }
+                                var dataRow = countryById.get(d.id + year);
+                                if (dataRow) {
+                                        var result = computeResult(dataRow, outcome);
+                                        var costs = computeCostPerLife(dataRow, outcome);
+                                        console.log(costs);
+                                        var revenues = getRevenue(dataRow, method);
+                                        var newGovRev = 100 * revenues[0];
+                                        var newGovAbsRev = revenues[1] / 1E6;
+                                        var newAdditionalPCGovRev = revenues[2];
+                                        var text = d.hasOwnProperty("properties") ? "<h1 class='tooltip'> " + d.properties.name + "<\/h2 class='tooltip'><br/>" : "";
+                                        var delta = result[0] - result[2];
+                                        text = text
+                                        + "<h2 class='tooltip'> Revenue <\/h2><\/br>"
+                                        + "<strong>" + "Original GrPC"
+                                        + "<\/strong>" + ": <span class='ar'>$" + dataRow.govRevCap.toFixed(0) + "<\/span><br/>"
+                                        + "<strong>" +  "Percentage GrPC increase"
+                                        + "<\/strong>" + ": <span class='ar'>" + newGovRev.toFixed(2) + "%<\/span><br/>"
+                                        + "<strong>" +  "Absolute extra revenue" 
+                                        + "<\/strong>" + ": <span class='ar'>$" + newGovAbsRev.toFixed(2) + "M<\/span><br/>"
+                                        + "<strong>" +  "Extra revenue per capita" 
+                                        + "<\/strong>" + ": <span class='ar'>$" + newAdditionalPCGovRev.toFixed(0) + "<\/span><br/>"
+                                        + "<h2 class='tooltip'>" + outcomesMap.get(outcome).name + " <\/h2><\/br>"
+                                        + "<strong> Original " + outcomesMap.get(outcome).name 
+                                        + "<\/strong>" + ": <span class='ar'>" + result[2].toFixed(3) + "<\/span><br/>";
+                                        text = text     + "<strong> Improved " + outcomesMap.get(outcome).name 
+                                        + "<\/strong>" + ": <span class='ar'>" + result[0].toFixed(3) + "<\/span><br/>"
+                                        text = text     + "<strong> Improvement in " + outcomesMap.get(outcome).name 
+                                        + "<\/strong>" + ": <span class='ar'>" + delta.toFixed(3) + "<\/span><br/>" 
+                                        + "<strong>" +  " lives saved" 
+                                        + "<\/strong>" + ":<span class='ar'> " + result[1].toFixed(1) + "<\/span><br/>"
+                                        + "<h2 class='tooltip'> Cost per life saved <\/h2><\/br>"
+                                        + "<strong>" +  "Per-capita cost of single life"
+                                        + "<\/strong>" + ": <span class='ar'>$" + costs[0].toFixed(2) + "<\/span><br/>"
+                                        + "<strong>" +  "Total extra revenue" 
+                                        + "<\/strong>" + ": <span class='ar'>$" + (costs[1] / 1E6).toFixed(0) + "M<\/span><br/>"
+                                        + "<strong>" +  "Increase in GRpC" 
+                                        + "<\/strong>" + ": <span class='ar'>" + costs[2].toFixed(2) + "%<\/span><br/>";
+                                        
+                                        return text;
+                                } else {
+                                        if (d.hasOwnProperty("properties"))
+                                                return "<strong>" + d.properties.name + "<\/strong>" + ": No data";
+                                        else
+                                                return "<strong>No data<\/strong>";
+                                }
+                        }
+
+                        function loaded(error, countries, mortalityRate) {
+
+                                outcomesMap.forEach(function(v, k){
+                                        outcomesMap.get(k).extent = d3.extent(mortalityRate, function(d) {
+                                        return parseFloat(d[k]);
+                                        });
+                                })
+                                
+                                colorScale.domain(d3.extent(mortalityRate, function(d) {
+                                return parseFloat(d[outcome]);
+                                }));
+                                
+                                var countries = topojson.feature(countries, countries.objects.units).features;
+
+                                svg.selectAll('path.countries')
+                                        .data(countries)
+                                        .enter()
+                                        .append('path')
+                                        .attr('class', 'countries')
+                                        .attr('d', path)
+                                        .attr('fill', function(d,i) {
+                                                return getColor(d);
+                                        })
+                                        .call(d3.helper.tooltip(
+                                                function(d, i){
+                                                        return getText(d);
+                                                })); // tooltip based on an example from Roger Veciana: http://bl.ocks.org/rveciana/5181105    
+
+                                svg2.append("g")
+                                  .attr("class", "legendLinear")
+                                  .attr("transform", "translate(0,20)");
+
+                                legendLinear = d3.legend.color()
+                                  .shapeWidth(75)
+                                  .orient('horizontal')
+                                  .scale(colorScale)
+                                  .cells(legendCells);
+
+                                svg2.select(".legendLinear")
+                                  .call(legendLinear);
+                                  
+                                svg2.append("text")
+                                        .attr("x", 0)             
+                                        .attr("y", 15)
+                                        .text(outcomesMap.get(outcome).desc);
+                                  
+                                d3.select("#revSlider").on("change", function(d){
+                                  govRevenue = this.value / 100.0;
+                                }); 
+                                d3.select("#absRevSlider").on("change", function(){
+                                  absGovRev = this.value * 1E6;
+                                })
+                                d3.select("#pcRevSlider").on("change", function(){
+                                  pcGovRev = this.value * 100;
+                                });
+                                
+                        function colourCountries()
+                        {
+                                   svg.selectAll('path.countries').transition()  
+                                  .duration(transitionTime)  
+                                  .attr('fill', function(d) {
+                                        return getColor(d);
+                                  })
+                        }
+                        
+                        function updateLegend()
+                        {
+                                var theOutcome = outcomesMap.get(outcome)
+                                var domain = theOutcome.hasOwnProperty("fixedExtent") ? theOutcome.fixedExtent : theOutcome.extent;
+                                colorScale.range([theOutcome.loCol, theOutcome.hiCol])
+                                .domain(domain);
+                                legendLinear.scale(colorScale);
+                                
+                                svg2.select(".legendLinear").remove();
+                                
+                                svg2.append("g")
+                                .attr("class", "legendLinear")
+                                .attr("transform", "translate(0,20)");
+                                
+                                svg2.select(".legendLinear")
+                                .call(legendLinear);
+                                
+                                svg2.select("text")
+                                .text(theOutcome.desc);
+                        }
+                        
+                        function updateCountries()
+                        {
+                                var d = {"id" : country};
+                                d3.select("#countrytext").
+                                html(getText(d));
+                                colourCountries();
+                        }
+                        
+                        function initMenus()
+                        {
+                                countries.sort(function(a,b)
+                                {
+                                         if (a.properties.name < b.properties.name) //sort string ascending
+                                                return -1;
+                                        if (a.properties.name > b.properties.name)
+                                                return 1;
+                                        return 0; //default return value (no sorting)
+                                });
+                                
+                                // add some "special" countries representing aggregate options.
+                                countries.unshift({
+                                        id: "$-HIC", 
+                                        properties : {name : "High-income countries"}});
+                                countries.unshift({
+                                        id: "$-UMIC", 
+                                        properties : {name : "Upper-middle-income countries"}});
+                                countries.unshift({
+                                        id: "$-LMIC", 
+                                        properties : {name : "Lower-middle-income countries"}});
+                                countries.unshift({
+                                        id: "$-LIC", 
+                                        properties : {name : "Low-income countries"}});
+                                countries.unshift({
+                                        id: "$-ALL", 
+                                        properties : {name : "Show all countries"}});
+                        
+                                 d3.select('#countrylist')
+                                .on('change', function(d) {
+                                        country = this.options[this.selectedIndex].value;
+                                        updateCountries();
+                                })
+                                .selectAll('option')
+                                .data(countries)
+                                .enter()
+                                .append('option')
+                                .attr('value', function(d) {return d.id;})
+                                .text(function(d) {return d.properties.name;}); 
+                                
+                                d3.select("#methodlist")
+                                .on("change", function(d) {
+                                        method = this.options[this.selectedIndex].value;
+                                        if (method == "percentage")
+                                        {
+                                                d3.select("#revDiv")
+                                                .style("display", "block")
+                                                d3.select("#absRevDiv")
+                                                .style("display", "none")
+                                                d3.select("#pcRevDiv")
+                                                .style("display", "none")
+                                        }
+                                        else if (method == "pc")
+                                        {
+                                                d3.select("#revDiv")
+                                                .style("display", "none")
+                                                d3.select("#absRevDiv")
+                                                .style("display", "none")
+                                                d3.select("#pcRevDiv")
+                                                .style("display", "block")
+                                        }
+                                        else
+                                        {
+                                                d3.select("#revDiv")
+                                                .style("display", "none")
+                                                d3.select("#absRevDiv")
+                                                .style("display", "block")
+                                                d3.select("#pcRevDiv")
+                                                .style("display", "none")
+                                        }
+                                        updateCountries();
+                                })
+                        }
+
+                        initMenus();
+                        d3.select("#revenueVal").text(govRevenue);
+                        d3.select("#yearVal").text(year);
+
+
+                        d3.select("#revSlider").on("input", function(d){
+                                govRevenue = this.value / 100.0;
+                                d3.select("#revenueVal").text(Math.round(govRevenue * 100) + " %");
+                                updateCountries();
+                        });
+                        
+                        d3.select("#absRevSlider").on("input", function(d){
+                                absGovRev = this.value * 1E6;
+                                d3.select("#absRevenueVal").text("$" + Math.round(absGovRev / 1E6) + "M");
+                                updateCountries();
+                        });
+                        
+                        d3.select("#pcRevSlider").on("input", function(d){
+                                pcGovRev = this.value * 1;
+                                d3.select("#perCapitaRevenueVal").text("$" + Math.round(pcGovRev));
+                                updateCountries();
+                        });
+
+                        d3.select("#yearSlider").on("input", function(d){
+                                year = this.value;
+                                d3.select("#yearVal").text(year);
+                                updateCountries();
+                        });
+                        
+                        d3.selectAll(".outcomes").on("input", function(d){
+                                outcome = this.value;
+                                updateLegend();
+                                updateCountries();
+                        });
+
+                        }
+
+  //]]>
+  </script>
+</body>
 </html>
