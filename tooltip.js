@@ -16,10 +16,13 @@ d3.helper.tooltip = function(accessor){
                 .style('top', (absoluteMousePos[1] - 15)+'px')
                 .style('position', 'absolute')
                 .style('z-index', 1001)
-                .style('border-radius', '2px')
-                .style('color', '#0099FF')
+                .style('border-radius', '5px')
+                .style('color', '#000000')
                 .style('padding', '10px 15px')
-                .style('background', 'rgba(255, 255, 255, 0.7)')
+                .style('background', 'rgba(255, 255, 255, 0.95)')
+				.style('border-style', 'solid')
+				.style('border-color', '#040404')
+				.style('border-width', '1px')
 				.style('pointer-events', 'none');
             // Add text using the accessor function
             var tooltipText = accessor(d, i) || '';

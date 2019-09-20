@@ -214,6 +214,29 @@
 		  -moz-border-radius: 3px;
 		  border-radius: 3px;
 		}
+		
+		.ar { float:right }
+		
+		.tooltip{
+			font-size : 100%;
+		}
+		
+		h1.tooltip{
+			color : #0099FF;
+			font-size : 150%;
+		}
+		
+		h2.tooltip{
+			color : #000000;
+			font-size : 120%;
+		}
+		
+		.tooltip strong
+		{
+			font-weight : normal;
+		}
+		
+
 	</style>
 	</head>
 	<body>
@@ -545,30 +568,34 @@
 					var newGovRev = 100 * revenues[0];
 					var newGovAbsRev = revenues[1] / 1E6;
 					var newAdditionalPCGovRev = revenues[2];
-					var text = d.hasOwnProperty("properties") ? "<strong> " + d.properties.name + "</strong><br/>" : "";
+					var text = d.hasOwnProperty("properties") ? "<h1 class='tooltip'> " + d.properties.name + "</h2 class='tooltip'><br/>" : "";
 					var delta = result[0] - result[2];
-					text = text	+ "<strong> Original " + outcomesMap.get(outcome).name 
-					+ "</strong>" + ": " + result[2].toFixed(3) + "<br/>";
-					text = text	+ "<strong> Improved " + outcomesMap.get(outcome).name 
-					+ "</strong>" + ": " + result[0].toFixed(3) + "<br/>"
-					text = text	+ "<strong> Resulting change in " + outcomesMap.get(outcome).name 
-					+ "</strong>" + ": " + delta.toFixed(3) + "<br/>" 
-					+ "<strong>" +  " lives saved" 
-					+ "</strong>" + ": " + result[1].toFixed(1) + "<br/>"
+					text = text
+					+ "<h2 class='tooltip'> Revenue </h2></br>"
 					+ "<strong>" + "Original GrPC"
-					+ "</strong>" + ": $" + dataRow.govRevCap.toFixed(0) + "<br/>"
+					+ "</strong>" + ": <span class='ar'>$" + dataRow.govRevCap.toFixed(0) + "</span><br/>"
 					+ "<strong>" +  "Percentage GrPC increase"
-					+ "</strong>" + ": " + newGovRev.toFixed(2) + "%<br/>"
+					+ "</strong>" + ": <span class='ar'>" + newGovRev.toFixed(2) + "%</span><br/>"
 					+ "<strong>" +  "Absolute extra revenue" 
-					+ "</strong>" + ": $" + newGovAbsRev.toFixed(2) + "M<br/>"
+					+ "</strong>" + ": <span class='ar'>$" + newGovAbsRev.toFixed(2) + "M</span><br/>"
 					+ "<strong>" +  "Extra revenue per capita" 
-					+ "</strong>" + ": $" + newAdditionalPCGovRev.toFixed(0) + "<br/>"
+					+ "</strong>" + ": <span class='ar'>$" + newAdditionalPCGovRev.toFixed(0) + "</span><br/>"
+					+ "<h2 class='tooltip'>" + outcomesMap.get(outcome).name + " </h2></br>"
+					+ "<strong> Original " + outcomesMap.get(outcome).name 
+					+ "</strong>" + ": <span class='ar'>" + result[2].toFixed(3) + "</span><br/>";
+					text = text	+ "<strong> Improved " + outcomesMap.get(outcome).name 
+					+ "</strong>" + ": <span class='ar'>" + result[0].toFixed(3) + "</span><br/>"
+					text = text	+ "<strong> Improvement in " + outcomesMap.get(outcome).name 
+					+ "</strong>" + ": <span class='ar'>" + delta.toFixed(3) + "</span><br/>" 
+					+ "<strong>" +  " lives saved" 
+					+ "</strong>" + ":<span class='ar'> " + result[1].toFixed(1) + "</span><br/>"
+					+ "<h2 class='tooltip'> Cost per life saved </h2></br>"
 					+ "<strong>" +  "Per-capita cost of single life"
-					+ "</strong>" + ": $" + costs[0].toFixed(2) + "<br/>"
-					+ "<strong>" +  "Countrywide cost of single life" 
-					+ "</strong>" + ": $" + (costs[1] / 1E6).toFixed(0) + "M<br/>"
-					+ "<strong>" +  "Increase in GRpC required to save single life" 
-					+ "</strong>" + ": " + costs[2].toFixed(2) + "%<br/>";
+					+ "</strong>" + ": <span class='ar'>$" + costs[0].toFixed(2) + "</span><br/>"
+					+ "<strong>" +  "Total extra revenue" 
+					+ "</strong>" + ": <span class='ar'>$" + (costs[1] / 1E6).toFixed(0) + "M</span><br/>"
+					+ "<strong>" +  "Increase in GRpC" 
+					+ "</strong>" + ": <span class='ar'>" + costs[2].toFixed(2) + "%</span><br/>";
 					
 					return text;
 				} else {
