@@ -27,6 +27,24 @@
                         float : left;
                         width : 350px;
                 }
+				
+				.output {
+                        float : left;
+						border-radius : 5px;
+						color : #000000;
+						padding : 10px 15px;
+						background : rgba(255, 255, 255, 0.95);
+						border-style : solid;
+						border-color : #040404;
+						border-width : 1px;
+						display : none;
+						pointer-events : none;
+                }
+				
+				.output strong
+                {
+                        font-weight : normal;
+                }
                 
                 vis {
                         float : left;
@@ -42,6 +60,12 @@
                         width : 0px;
                         min-width : 0px;
                 }
+				
+				#countrydata
+				{
+					margin-top : 100px;
+					margin-left : 10px;
+				}
                 
                 .sliders
                 {
@@ -336,11 +360,15 @@
                                 -->
 
       <div>
-        <p><span id="countrytext"></span></p>
+        
       </div>
     </div>
-
     <div id="vis"></div>
+		<div class = "output", id="countrydata">
+		<p>
+			<span id="countrytext"></span>
+		</p>
+	</div>
   </div><script type="text/javascript">
 //<![CDATA[
                         var width = 1500;
@@ -529,7 +557,6 @@
                                 if (pop > 0 & d.govRevCap > 0)
                                 {
                                         costPerCapita = 1000 * d.govRevCap ** 2 / (betaU5M * pop);
-                                        console.log(costPerCapita);
                                 }
                         
                                 var costAbsolute = costPerCapita * d.population;
@@ -550,6 +577,7 @@
                                 d.mortality = d.U5MORTALITY;
                                 d.matMortality = d.MATMORTALITY;
                                 d.population = +d.POPULATION;
+								d.country = d.COUNTRY;
 
                                 countryById.set(d.ISO + d.YEAR, d);
                                 return d;
@@ -581,12 +609,11 @@
                                 if (dataRow) {
                                         var result = computeResult(dataRow, outcome);
                                         var costs = computeCostPerLife(dataRow, outcome);
-                                        console.log(costs);
                                         var revenues = getRevenue(dataRow, method);
                                         var newGovRev = 100 * revenues[0];
                                         var newGovAbsRev = revenues[1] / 1E6;
                                         var newAdditionalPCGovRev = revenues[2];
-                                        var text = d.hasOwnProperty("properties") ? "<h1 class='tooltip'> " + d.properties.name + "<\/h2 class='tooltip'><br/>" : "";
+                                        var text = "<h1 class='tooltip'> " + dataRow.COUNTRY + "<\/h2 class='tooltip'><br/>";
                                         var delta = result[0] - result[2];
                                         text = text
                                         + "<h2 class='tooltip'> Revenue <\/h2><\/br>"
@@ -713,8 +740,11 @@
                         function updateCountries()
                         {
                                 var d = {"id" : country};
+								var text = getText(d);
                                 d3.select("#countrytext").
-                                html(getText(d));
+                                html(text);
+								d3.select("#countrydata")
+								.style("display", text.length > 0 ? "block" : "none");
                                 colourCountries();
                         }
                         
