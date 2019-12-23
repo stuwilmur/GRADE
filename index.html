@@ -488,7 +488,7 @@
                                         var newGRPC = d.govRevCap + absGovRev / d.population;
                                         var newGovRev = newGRPC / d.govRevCap - 1;
                                         var additionalPerCapita = absGovRev / d.population;
-                                        return [newGovRev, absGovRev, additionalPerCapita];
+										return [newGovRev, absGovRev, additionalPerCapita];
                                 }
                         }
 
@@ -708,7 +708,7 @@
                                   absGovRev = this.value * 1E6;
                                 })
                                 d3.select("#pcRevSlider").on("change", function(){
-                                  pcGovRev = this.value * 100;
+                                  pcGovRev = this.value * 1;
                                 });
                                 
                         function colourCountries()
