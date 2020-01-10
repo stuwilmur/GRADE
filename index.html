@@ -204,6 +204,10 @@
                 #pcRevDiv{
                         display : none;
                 }
+				
+				#prefix{
+						display : none;
+				}
                 
                 
                 .inline-div {
@@ -336,6 +340,16 @@
             Additional revenue per capita
           </option>
         </select>
+		
+		<select id="prefix" name="prefix">
+          <option value="M">
+            Millions (M USD)
+          </option>
+
+          <option value="B">
+            Billions (B USD)
+          </option>
+        </select>
       </div>
 
       <div class="sliders">
@@ -438,10 +452,13 @@
 
                         var govRevenue = 0;
                         var absGovRev = 0;
+						var absGovRevSlider = 0;
                         var pcGovRev = 0;
                         var year = 2016;
                         var country = "$-ALL";
                         var method = "percentage"
+						var prefix = "M";
+						var prefixValue = 1E6;
                         
                         // **** add or update outcomes here ****
                         var outcomesList = [
@@ -640,7 +657,7 @@
                                         var result = computeResult(dataRow, outcome);
                                         var revenues = getRevenue(dataRow, method);
                                         var newGovRev = 100 * revenues[0];
-                                        var newGovAbsRev = revenues[1] / 1E6;
+                                        var newGovAbsRev = revenues[1] / prefixValue;
                                         var newAdditionalPCGovRev = revenues[2];
 										var livesSaved = result[1];
 										var costs = computeCostPerLife(dataRow, outcome, newAdditionalPCGovRev, livesSaved);
@@ -653,7 +670,7 @@
                                         + "<strong>" +  "Percentage GrPC increase"
                                         + "<\/strong>" + ": <span class='ar'>" + newGovRev.toFixed(2) + "%<\/span><br/>"
                                         + "<strong>" +  "Absolute extra revenue" 
-                                        + "<\/strong>" + ": <span class='ar'>$" + newGovAbsRev.toFixed(2) + "M<\/span><br/>"
+                                        + "<\/strong>" + ": <span class='ar'>$" + newGovAbsRev.toFixed(2) + prefix + "<\/span><br/>"
                                         + "<strong>" +  "Extra revenue per capita" 
                                         + "<\/strong>" + ": <span class='ar'>$" + newAdditionalPCGovRev.toFixed(0) + "<\/span><br/>"
                                         + "<h2 class='tooltip'>" + outcomesMap.get(outcome).name + " <\/h2><\/br>"
@@ -669,7 +686,7 @@
                                         + "<strong>" +  "Per-capita cost of single life"
                                         + "<\/strong>" + ": <span class='ar'>$" + costs[0].toFixed(2) + "<\/span><br/>"
                                         + "<strong>" +  "Absolute cost of single life" 
-                                        + "<\/strong>" + ": <span class='ar'>$" + (costs[1] / 1E6).toFixed(2) + "M<\/span><br/>"
+                                        + "<\/strong>" + ": <span class='ar'>$" + (costs[1] / prefixValue).toFixed(2) + prefix + "<\/span><br/>"
                                         //+ "<strong>" +  "Increase in GRpC" 
                                         //+ "<\/strong>" + ": <span class='ar'>" + costs[2].toFixed(2) + "%<\/span><br/>";
                                         
@@ -732,7 +749,8 @@
                                   govRevenue = this.value / 100.0;
                                 }); 
                                 d3.select("#absRevSlider").on("change", function(){
-                                  absGovRev = this.value * 1E6;
+								  absGovRevSlider = this.value;
+                                  absGovRev = absGovRevSlider * prefixValue;
                                 })
                                 d3.select("#pcRevSlider").on("change", function(){
                                   pcGovRev = this.value * 1;
@@ -830,6 +848,8 @@
                                                 .style("display", "none")
                                                 d3.select("#pcRevDiv")
                                                 .style("display", "none")
+												d3.select("#prefix")
+												.style("display", "none")
                                         }
                                         else if (method == "pc")
                                         {
@@ -839,6 +859,8 @@
                                                 .style("display", "none")
                                                 d3.select("#pcRevDiv")
                                                 .style("display", "block")
+												d3.select("#prefix")
+												.style("display", "none")
                                         }
                                         else
                                         {
@@ -848,9 +870,24 @@
                                                 .style("display", "block")
                                                 d3.select("#pcRevDiv")
                                                 .style("display", "none")
-                                        }
+												d3.select("#prefix")
+												.style("display", "block")
+                                        }										
                                         updateCountries();
                                 })
+								
+								d3.select("#prefix")
+								.on("change", function(d)
+								{
+									prefix = this.options[this.selectedIndex].value;
+									var sliderVar = document.getElementById('#absRevSlider');
+									prefixValue = prefix == "M" ? 1E6 : 1E9;
+									absGovRev = absGovRevSlider * prefixValue;
+									d3.select("#absRevenueVal").text("$" + Math.round(absGovRev / prefixValue) + prefix);
+									console.log(prefix);
+									updateCountries();
+								}
+								)
                         }
 
                         initMenus();
@@ -864,11 +901,12 @@
                                 updateCountries();
                         });
                         
-                        d3.select("#absRevSlider").on("input", function(d){
-                                absGovRev = this.value * 1E6;
-                                d3.select("#absRevenueVal").text("$" + Math.round(absGovRev / 1E6) + "M");
-                                updateCountries();
-                        });
+						d3.select("#absRevSlider").on("input", function(d){
+								absGovRevSlider = this.value;
+								absGovRev = absGovRevSlider * prefixValue;
+								d3.select("#absRevenueVal").text("$" + Math.round(absGovRev / prefixValue) + prefix);
+								updateCountries();
+						});
                         
                         d3.select("#pcRevSlider").on("input", function(d){
                                 pcGovRev = this.value * 1;
