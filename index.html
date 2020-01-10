@@ -545,7 +545,7 @@
                                 }
                         }
                         
-                        function computeCostPerLife(d, type)
+                        function computeCostPerLife(d, type, newAdditionalPCGovRev, livesSaved)
                         {
                                 var costPerCapita = NaN;
                                 var pop = NaN;
@@ -558,9 +558,9 @@
                                 {
                                         pop = d.BIRTHS;
                                 }
-                                if (pop > 0 & d.govRevCap > 0)
+                                if (livesSaved > 0)
                                 {
-                                        costPerCapita = 1000 * d.govRevCap ** 2 / (betaU5M * pop);
+                                        costPerCapita = newAdditionalPCGovRev / livesSaved;
                                 }
                         
                                 var costAbsolute = costPerCapita * d.population;
@@ -612,11 +612,12 @@
                                 var dataRow = countryById.get(d.id + year);
                                 if (dataRow) {
                                         var result = computeResult(dataRow, outcome);
-                                        var costs = computeCostPerLife(dataRow, outcome);
                                         var revenues = getRevenue(dataRow, method);
                                         var newGovRev = 100 * revenues[0];
                                         var newGovAbsRev = revenues[1] / 1E6;
                                         var newAdditionalPCGovRev = revenues[2];
+										var livesSaved = result[1];
+										var costs = computeCostPerLife(dataRow, outcome, newAdditionalPCGovRev, livesSaved);
                                         var text = "<h1 class='tooltip'> " + dataRow.COUNTRY + "<\/h2 class='tooltip'><br/>";
                                         var delta = result[0] - result[2];
                                         text = text
