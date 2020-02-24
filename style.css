@@ -1,0 +1,281 @@
+body {
+		font-family: 'Open Sans', Helvetica, sans-serif;
+
+}
+
+.all{
+		min-width : 100%;
+}
+
+.menu {
+		float : left;
+		width : 350px;
+}
+
+.output {
+		float : left;
+		border-radius : 5px;
+		color : #000000;
+		padding : 10px 15px;
+		background : rgba(255, 255, 255, 0.95);
+		border-style : solid;
+		border-color : #040404;
+		border-width : 1px;
+		display : none;
+		pointer-events : none;
+}
+
+.output strong
+{
+		font-weight : normal;
+}
+
+vis {
+		float : left;
+		margin-left : 10px;
+		margin-top : 10px;
+		width : 0px;
+		min-width : 0px;
+}
+
+#vis {
+		float : left;
+		margin-left : 10px;
+		width : 0px;
+		min-width : 0px;
+}
+
+#countrydata
+{
+	margin-top : 100px;
+	margin-left : 10px;
+}
+
+.sliders
+{
+		margin-top : 10px;
+		margin-bottom : 10px;
+}
+
+ul
+{
+		list-style-type:none;
+		padding-left: 0;
+}
+
+a:link {
+  color: black;
+}
+
+/* visited link */
+a:visited {
+  color: black;
+}
+
+/* mouse over link */
+a:hover {
+  color: black;
+  text-decoration: underline;
+}
+
+select {
+
+margin-top: 20px;
+margin-bottom: 20px;
+padding: 5px 35px 5px 5px;
+font-size: 16px;
+border: 1px solid #ccc;
+height: 34px;
+font-family: 'Open Sans', Helvetica, sans-serif;
+-webkit-appearance: none;
+-moz-appearance: none;
+appearance: none;
+}
+
+.countries {
+		stroke: #fff;
+		stroke-width:1px;
+}
+
+.countries:hover{
+		opacity: .7;
+}
+
+.legendLinear text {
+		font-size: 9px;
+}
+
+/*.d3-tip {
+		font-weight: bold;
+		padding: 10px 15px;
+		background: rgba(255, 255, 255, 0.5);
+		color: #0099FF;
+		border-radius: 2px;
+}*/
+
+svg {
+		display: block;
+		margin: auto;
+}
+
+.slidecontainer {
+  width: 100%;
+  margin-top : 30px;
+  margin-bottom : 30px;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 10px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 15px;
+  background: #0099FF;
+  cursor: pointer;
+  border: none;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  border-radius: 15px;
+  background: #0099FF;
+  cursor: pointer;
+  border: none;
+}
+
+[type=radio] { 
+position: absolute;
+opacity: 0;
+width: 0;
+height: 0;
+}
+
+/* IMAGE STYLES */
+[type=radio] + img {
+cursor: pointer;
+opacity : .50;
+}
+
+/* CHECKED STYLES */
+[type=radio]:checked + img {
+opacity : 1.00;
+}
+
+#revDiv{
+		display : block;
+}
+
+#absRevDiv{
+		display : none;
+}
+
+#pcRevDiv{
+		display : none;
+}
+
+#prefix{
+		display : none;
+}
+
+
+.inline-div {
+		display: block;
+}
+
+h2
+{
+		display: inline-block;
+}
+h3
+{
+		font-size: 90%;
+		display: inline-block;
+		background-color: #e09900;
+		border-width: 10px;
+		border-style: solid;
+		border-radius: 0px;
+		border-color: #e09900;
+		margin-left: 20px;
+		color: white;
+}
+
+a{
+		text-decoration:none;
+}
+
+.label {
+		padding: 1px 3px 2px;
+		font-size: 90%;
+		font-weight: bold;
+		color: #ffffff;
+		white-space: nowrap;
+		background-color: #e09900;
+		-webkit-border-radius: 0px;
+		-moz-border-radius: 0px;
+		border-radius: 0px;
+		border: solid;
+		border-color: #e09900;
+		border-width: 10px;
+		text-decoration: none;
+}
+.label.success {
+		background-color: #e09900;
+}
+
+.item a h2.new-label span{
+  position: relative;
+  content: 'NEW'
+}
+.item:hover a h2.new-label span{
+  display: none;
+}
+.item:hover a h2.new-label:after{
+  content: 'G-LIST Homepage \2190';
+}
+
+.label:hover {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
+.ar { float:right }
+
+.tooltip{
+		font-size : 100%;
+}
+
+h1.tooltip{
+		color : #0099FF;
+		font-size : 150%;
+		margin-top:0px;
+		margin-bottom:0px;
+}
+
+h2.tooltip{
+		color : #000000;
+		font-size : 120%;
+		margin-top:0px;
+		margin-bottom:0px;
+}
+
+.tooltip strong
+{
+		font-weight : normal;
+}

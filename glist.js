@@ -4,31 +4,9 @@ var     subheight = 100;
 var legendCells = 10;
 var transitionTime = 500;
 
-var svg = d3.select('#vis').append('svg')
-		.attr('width', width)
-		.attr('height', height)
-		.call(d3.behavior.zoom()
-		.on("zoom", redraw))
-		.append("g");
-		
-var svg2 = d3.select('#vis').append('svg')
-		.attr('width', width)
-		.attr('height', subheight)
-		.call(d3.behavior.zoom()
-		.on("zoom", redraw))
-		.append("g");
 
-function redraw() {
-		svg.attr("transform", "translate(" + d3.event.translate 
-		+ ")scale(" + d3.event.scale + ")");
-}
 
-var projection = d3.geo.mercator()
-		.scale(225)
-		.translate([width / 2, height / 2]);
 
-var path = d3.geo.path()
-		.projection(projection);
 
 var countryById = d3.map();
 var legendLinear;
@@ -76,9 +54,7 @@ var outcomesList = [
 
 let outcomesMap = new Map(outcomesList);
 var outcome = "mortality";
-var colorScale = d3.scale.linear().
-range([outcomesMap.get(outcome).loCol, outcomesMap.get(outcome).hiCol]).
-interpolate(d3.interpolateLab);
+
 
 const cLIC  = 1;
 const cLMIC  = 2;
@@ -95,21 +71,21 @@ function getRevenue(d, m)
 		{
 				var newAbsRev = (d.govRevCap * (govRevenue)) * d.population;
 				var additionalPerCapita = d.govRevCap * govRevenue;
-				return [govRevenue, newAbsRev, additionalPerCapita];
+				return [govRevenue, newAbsRev, additionalPerCapita, d.govRevCap + additionalPerCapita];
 		}
 		else if (m == "pc")
 		{
 				var newGRPC = d.govRevCap + pcGovRev;
 				var newGovRev = newGRPC / d.govRevCap - 1;
 				var newAbsRev = (d.govRevCap * (newGovRev)) * d.population;
-				return [newGovRev, newAbsRev, pcGovRev];
+				return [newGovRev, newAbsRev, pcGovRev, newGRPC];
 		}
 		else
 		{
 				var newGRPC = d.govRevCap + absGovRev / d.population;
 				var newGovRev = newGRPC / d.govRevCap - 1;
 				var additionalPerCapita = absGovRev / d.population;
-				return [newGovRev, absGovRev, additionalPerCapita];
+				return [newGovRev, absGovRev, additionalPerCapita, newGRPC];
 		}
 }
 
@@ -462,7 +438,6 @@ function initMenus()
 			prefixValue = prefix == "M" ? 1E6 : 1E9;
 			absGovRev = absGovRevSlider * prefixValue;
 			d3.select("#absRevenueVal").text("$" + Math.round(absGovRev / prefixValue) + prefix);
-			console.log(prefix);
 			updateCountries();
 		}
 		)
