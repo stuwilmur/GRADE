@@ -156,6 +156,11 @@ function redraw() {
 		+ ")scale(" + d3.event.scale + ")");
 }
 
+function mainUpdate()
+{
+	updateCountries();
+}
+
 var projection = d3.geo.mercator()
 		.scale(225)
 		.translate([width / 2, height / 2]);

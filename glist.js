@@ -253,6 +253,178 @@ function getText(d) {
 		}
 }
 
+function setupMenus(countries)
+{
+	function initMenus(countries)
+	{
+			countries.sort(function(a,b)
+			{
+					 if (a.properties.name < b.properties.name) //sort string ascending
+							return -1;
+					if (a.properties.name > b.properties.name)
+							return 1;
+					return 0; //default return value (no sorting)
+			});
+			
+			// add some "special" countries representing aggregate options.
+			countries.unshift({
+					id: "$-HIC", 
+					properties : {name : "High-income countries"}});
+			countries.unshift({
+					id: "$-UMIC", 
+					properties : {name : "Upper-middle-income countries"}});
+			countries.unshift({
+					id: "$-LMIC", 
+					properties : {name : "Lower-middle-income countries"}});
+			countries.unshift({
+					id: "$-LIC", 
+					properties : {name : "Low-income countries"}});
+			countries.unshift({
+					id: "$-ALL", 
+					properties : {name : "Show all countries"}});
+
+			 d3.select('#countrylist')
+			.on('change', function(d) {
+					country = this.options[this.selectedIndex].value;
+					mainUpdate();
+			})
+			.selectAll('option')
+			.data(countries)
+			.enter()
+			.append('option')
+			.attr('value', function(d) {return d.id;})
+			.text(function(d) {return d.properties.name;}); 
+			
+			d3.select("#methodlist")
+			.on("change", function(d) {
+					method = this.options[this.selectedIndex].value;
+					if (method == "percentage")
+					{
+							d3.select("#revDiv")
+							.style("display", "block")
+							d3.select("#absRevDiv")
+							.style("display", "none")
+							d3.select("#pcRevDiv")
+							.style("display", "none")
+							d3.select("#prefix")
+							.style("display", "none")
+					}
+					else if (method == "pc")
+					{
+							d3.select("#revDiv")
+							.style("display", "none")
+							d3.select("#absRevDiv")
+							.style("display", "none")
+							d3.select("#pcRevDiv")
+							.style("display", "block")
+							d3.select("#prefix")
+							.style("display", "none")
+					}
+					else
+					{
+							d3.select("#revDiv")
+							.style("display", "none")
+							d3.select("#absRevDiv")
+							.style("display", "block")
+							d3.select("#pcRevDiv")
+							.style("display", "none")
+							d3.select("#prefix")
+							.style("display", "block")
+					}										
+					mainUpdate();
+			})
+			
+			d3.select("#prefix")
+			.on("change", function(d)
+			{
+				prefix = this.options[this.selectedIndex].value;
+				var sliderVar = document.getElementById('#absRevSlider');
+				prefixValue = prefix == "M" ? 1E6 : 1E9;
+				absGovRev = absGovRevSlider * prefixValue;
+				d3.select("#absRevenueVal").text("$" + Math.round(absGovRev / prefixValue) + prefix);
+				mainUpdate();
+			}
+			)
+	}
+
+initMenus(countries);
+d3.select("#revenueVal").text(govRevenue);
+d3.select("#yearVal").text(year);
+
+function updateLegend()
+{
+		var theOutcome = outcomesMap.get(outcome)
+		var domain = theOutcome.hasOwnProperty("fixedExtent") ? theOutcome.fixedExtent : theOutcome.extent;
+		colorScale.range([theOutcome.loCol, theOutcome.hiCol])
+		.domain(domain);
+		legendLinear.scale(colorScale);
+		
+		svg2.select(".legendLinear").remove();
+		
+		svg2.append("g")
+		.attr("class", "legendLinear")
+		.attr("transform", "translate(0,20)");
+		
+		svg2.select(".legendLinear")
+		.call(legendLinear);
+		
+		svg2.select("text")
+		.text(theOutcome.desc);
+}
+
+
+d3.select("#revSlider").on("input", function(d){
+		govRevenue = this.value / 100.0;
+		d3.select("#revenueVal").text(Math.round(govRevenue * 100) + " %");
+		mainUpdate();
+});
+
+d3.select("#absRevSlider").on("input", function(d){
+		absGovRevSlider = this.value;
+		absGovRev = absGovRevSlider * prefixValue;
+		d3.select("#absRevenueVal").text("$" + Math.round(absGovRev / prefixValue) + prefix);
+		mainUpdate();
+});
+
+d3.select("#pcRevSlider").on("input", function(d){
+		pcGovRev = this.value * 1;
+		d3.select("#perCapitaRevenueVal").text("$" + Math.round(pcGovRev));
+		mainUpdate();
+});
+
+d3.select("#yearSlider").on("input", function(d){
+		year = this.value;
+		d3.select("#yearVal").text(year);
+		mainUpdate();
+});
+
+d3.selectAll(".outcomes").on("input", function(d){
+		outcome = this.value;
+		updateLegend();
+		mainUpdate();
+});
+}
+
+function colourCountries()
+{
+		   svg.selectAll('path.countries').transition()  
+		  .duration(transitionTime)  
+		  .attr('fill', function(d) {
+				return getColor(d);
+		  })
+}
+
+function updateCountries()
+{
+		var d = {"id" : country};
+		var text = getText(d);
+		d3.select("#countrytext").
+		html(text);
+		d3.select("#countrydata")
+		.style("display", text.length > 0 ? "block" : "none");
+		colourCountries();
+}
+
 function loaded(error, countries, mortalityRate) {
 
 		outcomesMap.forEach(function(v, k){
@@ -310,173 +482,10 @@ function loaded(error, countries, mortalityRate) {
 		  pcGovRev = this.value * 1;
 		});
 		
-function colourCountries()
-{
-		   svg.selectAll('path.countries').transition()  
-		  .duration(transitionTime)  
-		  .attr('fill', function(d) {
-				return getColor(d);
-		  })
-}
-
-function updateLegend()
-{
-		var theOutcome = outcomesMap.get(outcome)
-		var domain = theOutcome.hasOwnProperty("fixedExtent") ? theOutcome.fixedExtent : theOutcome.extent;
-		colorScale.range([theOutcome.loCol, theOutcome.hiCol])
-		.domain(domain);
-		legendLinear.scale(colorScale);
-		
-		svg2.select(".legendLinear").remove();
-		
-		svg2.append("g")
-		.attr("class", "legendLinear")
-		.attr("transform", "translate(0,20)");
-		
-		svg2.select(".legendLinear")
-		.call(legendLinear);
-		
-		svg2.select("text")
-		.text(theOutcome.desc);
-}
-
-function updateCountries()
-{
-		var d = {"id" : country};
-		var text = getText(d);
-		d3.select("#countrytext").
-		html(text);
-		d3.select("#countrydata")
-		.style("display", text.length > 0 ? "block" : "none");
-		colourCountries();
-}
-
-function initMenus()
-{
-		countries.sort(function(a,b)
-		{
-				 if (a.properties.name < b.properties.name) //sort string ascending
-						return -1;
-				if (a.properties.name > b.properties.name)
-						return 1;
-				return 0; //default return value (no sorting)
-		});
-		
-		// add some "special" countries representing aggregate options.
-		countries.unshift({
-				id: "$-HIC", 
-				properties : {name : "High-income countries"}});
-		countries.unshift({
-				id: "$-UMIC", 
-				properties : {name : "Upper-middle-income countries"}});
-		countries.unshift({
-				id: "$-LMIC", 
-				properties : {name : "Lower-middle-income countries"}});
-		countries.unshift({
-				id: "$-LIC", 
-				properties : {name : "Low-income countries"}});
-		countries.unshift({
-				id: "$-ALL", 
-				properties : {name : "Show all countries"}});
-
-		 d3.select('#countrylist')
-		.on('change', function(d) {
-				country = this.options[this.selectedIndex].value;
-				updateCountries();
-		})
-		.selectAll('option')
-		.data(countries)
-		.enter()
-		.append('option')
-		.attr('value', function(d) {return d.id;})
-		.text(function(d) {return d.properties.name;}); 
-		
-		d3.select("#methodlist")
-		.on("change", function(d) {
-				method = this.options[this.selectedIndex].value;
-				if (method == "percentage")
-				{
-						d3.select("#revDiv")
-						.style("display", "block")
-						d3.select("#absRevDiv")
-						.style("display", "none")
-						d3.select("#pcRevDiv")
-						.style("display", "none")
-						d3.select("#prefix")
-						.style("display", "none")
-				}
-				else if (method == "pc")
-				{
-						d3.select("#revDiv")
-						.style("display", "none")
-						d3.select("#absRevDiv")
-						.style("display", "none")
-						d3.select("#pcRevDiv")
-						.style("display", "block")
-						d3.select("#prefix")
-						.style("display", "none")
-				}
-				else
-				{
-						d3.select("#revDiv")
-						.style("display", "none")
-						d3.select("#absRevDiv")
-						.style("display", "block")
-						d3.select("#pcRevDiv")
-						.style("display", "none")
-						d3.select("#prefix")
-						.style("display", "block")
-				}										
-				updateCountries();
-		})
-		
-		d3.select("#prefix")
-		.on("change", function(d)
-		{
-			prefix = this.options[this.selectedIndex].value;
-			var sliderVar = document.getElementById('#absRevSlider');
-			prefixValue = prefix == "M" ? 1E6 : 1E9;
-			absGovRev = absGovRevSlider * prefixValue;
-			d3.select("#absRevenueVal").text("$" + Math.round(absGovRev / prefixValue) + prefix);
-			updateCountries();
-		}
-		)
-}
-
-initMenus();
-d3.select("#revenueVal").text(govRevenue);
-d3.select("#yearVal").text(year);
 
 
-d3.select("#revSlider").on("input", function(d){
-		govRevenue = this.value / 100.0;
-		d3.select("#revenueVal").text(Math.round(govRevenue * 100) + " %");
-		updateCountries();
-});
 
-d3.select("#absRevSlider").on("input", function(d){
-		absGovRevSlider = this.value;
-		absGovRev = absGovRevSlider * prefixValue;
-		d3.select("#absRevenueVal").text("$" + Math.round(absGovRev / prefixValue) + prefix);
-		updateCountries();
-});
 
-d3.select("#pcRevSlider").on("input", function(d){
-		pcGovRev = this.value * 1;
-		d3.select("#perCapitaRevenueVal").text("$" + Math.round(pcGovRev));
-		updateCountries();
-});
-
-d3.select("#yearSlider").on("input", function(d){
-		year = this.value;
-		d3.select("#yearVal").text(year);
-		updateCountries();
-});
-
-d3.selectAll(".outcomes").on("input", function(d){
-		outcome = this.value;
-		updateLegend();
-		updateCountries();
-});
+setupMenus(countries);
 
 }

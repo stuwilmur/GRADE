@@ -1,7 +1,19 @@
 var margin = ({top: 20, right: 20, bottom: 35, left: 40})
 var ccolor = "economy";
+var c;
+var width = 1500;
+var height = 700;
+
+var margin = ({top: 20, right: 20, bottom: 35, left: 40})
+
+var svg = d3.select('#vis').append('svg')
+	.attr('width', width)
+	.attr('height', height)
+	//.attr("viewBox", [0, 0, width, height])
+	.append("g");
 
 let mapped = new Map();
+var countries;
 
 function dataAt(year){
   var res = mapped.filter(function(d) {return d.year == year})
@@ -30,7 +42,7 @@ function xAxis(g)
 		  .attr("y", margin.bottom - 4)
 		  .attr("fill", "currentColor")
 		  .attr("text-anchor", "end")
-		  .text("Government revenue per capita (USD) →"))
+		  .text("Government revenue per capita (USD)"))
 }
 	  
 var fyAxis = function(ay, annotation){
@@ -91,12 +103,13 @@ function load(datalist) {
   .key(function(d) { return d.YEAR; })
   .entries(data);
   
-  var countries = d3.nest()
+  countries = d3.nest()
   .key(function(d) { return d.COUNTRY; })
   .entries(data)
   .map(d => d.key)
   //.filter(d => d.length > 0)
   .sort()
+  .map(function(d) {return {properties : {name : d}}});
   
   mapped = countriesnested.map( function(d){
   var obd = {year : +d.key, 
@@ -120,7 +133,9 @@ function load(datalist) {
   return obd;
   ; })
   
-  chart("mortality", [0,300], "↑ Under-5 mortality (per 1000 births)");
+  c = chart("mortality", [0,300], "Under-5 mortality (per 1000 births)");
+  
+  setupMenus(countries);
 
 }
 
@@ -169,7 +184,7 @@ function chart(measure, range, annotation) {
   const circle = svg.append("g")
   .attr("stroke", "black")
   .selectAll("circle")
-  .data(dataAt(1980), d => d.name)
+  .data(dataAt(year), d => d.name)
   .join("circle")
   .sort((a, b) => d3.descending(a.population, b.population))
   .attr("stroke-width", getstroke)
@@ -193,4 +208,9 @@ function chart(measure, range, annotation) {
         .call(circle => circle.select("title").text(d => labelText(d,measure)));
     }
   });
+}
+
+function update()
+{
+	c.update(dataAt(year));
 }
