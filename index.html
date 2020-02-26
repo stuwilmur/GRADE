@@ -48,7 +48,7 @@
         <select id="countrylist" name="country">
           </select>
 
-        <p>Specify additoinal revenue as:</p><select id="methodlist" name="method">
+        <p>Specify additional revenue as:</p><select id="methodlist" name="method">
           <option value="percentage">
             Percentage of gov. rev. per capita
           </option>
@@ -137,6 +137,9 @@
   </div><script src = "glist.js" type="text/javascript">
   </script>
   <script type="text/javascript">
+  var width = 1500;
+  var height = 700;
+  
   var svg = d3.select('#vis').append('svg')
 		.attr('width', width)
 		.attr('height', height)

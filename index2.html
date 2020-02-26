@@ -96,19 +96,7 @@
 
           <p>Year: <span id="yearVal"></span></p>
         </div>
-      </div><label><input class="outcomes" type="radio" name="test" value="mortality"
-      checked="checked" /> <img src="img/u5m.png" width="100" /></label>
-      <label><input class="outcomes" type="radio" name="test" value="matMortality" />
-      <img src="img/mmr.png" width="100" /></label> <!--
-                                <label>
-                                        <input class = "outcomes" type="radio" name="test" value="PScompletion">
-                                        <img src="img/E_SDG goals_icons-individual-rgb-04.png" width = 100>
-                                </label>
-                                <label>
-                                        <input class = "outcomes" type="radio" name="test" value="Immunisation">
-                                        <img src="img/E_SDG goals_icons-individual-rgb-06.png" width = 100>
-                                </label>
-                                -->
+      </div>
 
 <h2>Download data:</h2>
 <ul>
@@ -130,6 +118,18 @@
   </script>
   <script src = "glist.js" type="text/javascript"></script>
     <script type = "text/javascript">
+	var svg = d3.select('#vis').append('svg')
+	.attr('width', width)
+	.attr('height', height)
+	//.attr("viewBox", [0, 0, width, height])
+	.append("g");
+	
+	var svg2 = d3.select('#vis').append('svg')
+	.attr('width', width)
+	.attr('height', height)
+	//.attr("viewBox", [0, 0, width, height])
+	.append("g");
+	
 	loadfile();
 	function mainUpdate()
 	{

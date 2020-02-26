@@ -1,13 +1,6 @@
-var width = 1500;
-var height = 700;
-var     subheight = 100;
+var subheight = 100;
 var legendCells = 10;
 var transitionTime = 500;
-
-
-
-
-
 var countryById = d3.map();
 var legendLinear;
 
@@ -201,6 +194,48 @@ function getColor(d) {
 		}
 }
 
+function makeText(dataRow)
+{
+	var result = computeResult(dataRow, outcome);
+	var revenues = getRevenue(dataRow, method);
+	var newGovRev = 100 * revenues[0];
+	var newGovAbsRev = revenues[1] / prefixValue;
+	var newAdditionalPCGovRev = revenues[2];
+	var livesSaved = result[1];
+	var costs = computeCostPerLife(dataRow, outcome, newAdditionalPCGovRev, livesSaved);
+	var countryname = dataRow.hasOwnProperty("COUNTRY") ? dataRow.COUNTRY : dataRow.name;
+	var text = "<h1 class='tooltip'> " + countryname + "<\/h2 class='tooltip'><br/>";
+	var delta = result[0] - result[2];
+	text = text
+	+ "<h2 class='tooltip'> Revenue <\/h2><\/br>"
+	+ "<strong>" + "Original GrPC"
+	+ "<\/strong>" + ": <span class='ar'>$" + dataRow.govRevCap.toFixed(0) + "<\/span><br/>"
+	+ "<strong>" +  "Percentage GrPC increase"
+	+ "<\/strong>" + ": <span class='ar'>" + newGovRev.toFixed(2) + "%<\/span><br/>"
+	+ "<strong>" +  "Absolute extra revenue" 
+	+ "<\/strong>" + ": <span class='ar'>$" + newGovAbsRev.toFixed(2) + prefix + "<\/span><br/>"
+	+ "<strong>" +  "Extra revenue per capita" 
+	+ "<\/strong>" + ": <span class='ar'>$" + newAdditionalPCGovRev.toFixed(0) + "<\/span><br/>"
+	+ "<h2 class='tooltip'>" + outcomesMap.get(outcome).name + " <\/h2><\/br>"
+	+ "<strong> Original " + outcomesMap.get(outcome).name 
+	+ "<\/strong>" + ": <span class='ar'>" + result[2].toFixed(2) + "<\/span><br/>";
+	text = text     + "<strong> Improved " + outcomesMap.get(outcome).name 
+	+ "<\/strong>" + ": <span class='ar'>" + result[0].toFixed(2) + "<\/span><br/>"
+	text = text     + "<strong> Improvement in " + outcomesMap.get(outcome).name 
+	+ "<\/strong>" + ": <span class='ar'>" + delta.toFixed(2) + "<\/span><br/>" 
+	+ "<strong>" +  " lives saved" 
+	+ "<\/strong>" + ":<span class='ar'> " + result[1].toFixed(1) + "<\/span><br/>"
+	+ "<h2 class='tooltip'> Cost per life saved <\/h2><\/br>"
+	+ "<strong>" +  "Per-capita cost of single life"
+	+ "<\/strong>" + ": <span class='ar'>$" + costs[0].toFixed(2) + "<\/span><br/>"
+	+ "<strong>" +  "Absolute cost of single life" 
+	+ "<\/strong>" + ": <span class='ar'>$" + (costs[1] / prefixValue).toFixed(2) + prefix + "<\/span><br/>"
+	//+ "<strong>" +  "Increase in GRpC" 
+	//+ "<\/strong>" + ": <span class='ar'>" + costs[2].toFixed(2) + "%<\/span><br/>";
+	
+	return text;	
+}
+
 function getText(d) {
 		if (d.id[0] == "$")
 		{
@@ -208,43 +243,7 @@ function getText(d) {
 		}
 		var dataRow = countryById.get(d.id + year);
 		if (dataRow) {
-				var result = computeResult(dataRow, outcome);
-				var revenues = getRevenue(dataRow, method);
-				var newGovRev = 100 * revenues[0];
-				var newGovAbsRev = revenues[1] / prefixValue;
-				var newAdditionalPCGovRev = revenues[2];
-				var livesSaved = result[1];
-				var costs = computeCostPerLife(dataRow, outcome, newAdditionalPCGovRev, livesSaved);
-				var text = "<h1 class='tooltip'> " + dataRow.COUNTRY + "<\/h2 class='tooltip'><br/>";
-				var delta = result[0] - result[2];
-				text = text
-				+ "<h2 class='tooltip'> Revenue <\/h2><\/br>"
-				+ "<strong>" + "Original GrPC"
-				+ "<\/strong>" + ": <span class='ar'>$" + dataRow.govRevCap.toFixed(0) + "<\/span><br/>"
-				+ "<strong>" +  "Percentage GrPC increase"
-				+ "<\/strong>" + ": <span class='ar'>" + newGovRev.toFixed(2) + "%<\/span><br/>"
-				+ "<strong>" +  "Absolute extra revenue" 
-				+ "<\/strong>" + ": <span class='ar'>$" + newGovAbsRev.toFixed(2) + prefix + "<\/span><br/>"
-				+ "<strong>" +  "Extra revenue per capita" 
-				+ "<\/strong>" + ": <span class='ar'>$" + newAdditionalPCGovRev.toFixed(0) + "<\/span><br/>"
-				+ "<h2 class='tooltip'>" + outcomesMap.get(outcome).name + " <\/h2><\/br>"
-				+ "<strong> Original " + outcomesMap.get(outcome).name 
-				+ "<\/strong>" + ": <span class='ar'>" + result[2].toFixed(2) + "<\/span><br/>";
-				text = text     + "<strong> Improved " + outcomesMap.get(outcome).name 
-				+ "<\/strong>" + ": <span class='ar'>" + result[0].toFixed(2) + "<\/span><br/>"
-				text = text     + "<strong> Improvement in " + outcomesMap.get(outcome).name 
-				+ "<\/strong>" + ": <span class='ar'>" + delta.toFixed(2) + "<\/span><br/>" 
-				+ "<strong>" +  " lives saved" 
-				+ "<\/strong>" + ":<span class='ar'> " + result[1].toFixed(1) + "<\/span><br/>"
-				+ "<h2 class='tooltip'> Cost per life saved <\/h2><\/br>"
-				+ "<strong>" +  "Per-capita cost of single life"
-				+ "<\/strong>" + ": <span class='ar'>$" + costs[0].toFixed(2) + "<\/span><br/>"
-				+ "<strong>" +  "Absolute cost of single life" 
-				+ "<\/strong>" + ": <span class='ar'>$" + (costs[1] / prefixValue).toFixed(2) + prefix + "<\/span><br/>"
-				//+ "<strong>" +  "Increase in GRpC" 
-				//+ "<\/strong>" + ": <span class='ar'>" + costs[2].toFixed(2) + "%<\/span><br/>";
-				
-				return text;
+			return makeText(dataRow);
 		} else {
 				if (d.hasOwnProperty("properties"))
 						return "<strong>" + d.properties.name + "<\/strong>" + ": No data";

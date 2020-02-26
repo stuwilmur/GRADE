@@ -1,25 +1,22 @@
 var margin = ({top: 20, right: 20, bottom: 35, left: 40})
 var ccolor = "economy";
 var c;
-var width = 1500;
-var height = 700;
+var c2;
+	var width = 1500;
+	var height = 450;
 
 var margin = ({top: 20, right: 20, bottom: 35, left: 40})
 
-var svg = d3.select('#vis').append('svg')
-	.attr('width', width)
-	.attr('height', height)
-	//.attr("viewBox", [0, 0, width, height])
-	.append("g");
+
 
 let mapped = new Map();
 var countries;
 
-function dataAt(year){
+function dataAt(year, recompute = true){
   var res = mapped.filter(function(d) {return d.year == year})
   if (res.length > 0)
   {
-	var data2 = res[0].data.map(function(d){return recomputedata(d);})
+	var data2 = res[0].data.map(function(d){var ret = recompute ? recomputedata(d) : d; return ret;})
     return data2;
   }
 }
@@ -92,6 +89,7 @@ function recomputedata(d){
   e.matmortality = computed2[0];
   var computedRev = getRevenue(d, method);
   e.govRevCap = computedRev[3];
+  e.show = d.govRevCap > 0;
   return e;
 }
 
@@ -133,22 +131,32 @@ function load(datalist) {
   return obd;
   ; })
   
-  c = chart("mortality", [0,300], "Under-5 mortality (per 1000 births)");
+  c = chart(svg, "mortality", [0,300], "Under-5 mortality (per 1000 births)");
+  c2 = chart(svg2, "matmortality", [0,1500], "Maternal mortality (per 100,000 births)");
   
   setupMenus(countries);
 
 }
 
-function displaycircle(govRevCap, value)
+function displaycircle(d, measure)
 {
-  if (govRevCap > 0 && !isNaN(value))
-    return "block";
+  if (d.name.trim() == country
+  || (country == "$-ALL")
+  || (country == "$-HIC" && d.economy == 4)
+  || (country == "$-UMIC" && d.economy == 3)
+  || (country == "$-LMIC" && d.economy == 2)
+  || (country == "$-LIC" && d.economy == 1)
+  )
+  {
+	  if (d.show && !isNaN(d[measure]))
+		return "block";
+  }
   return "none";
 }
 
 function getstroke(d)
 {
-  var ret = d.name == country ? 4 : 0.5;
+  var ret = d.name.trim() == country ? 2 : 0.5;
   return ret;
 }
 
@@ -164,24 +172,24 @@ function loadfile()
 	Promise.all(promises).then(load);	
 }
 
-function chart(measure, range, annotation) {
+function chart(thesvg, measure, range, annotation) {
   
-  svg.append("g")
+  thesvg.append("g")
     .call(xAxis);
 
   var y = fy(range);
 
   var yAxis = fyAxis(y, annotation);
 
-  svg.append("g")
+  thesvg.append("g")
     .call(yAxis);
 
   var grid = fgrid(y);
 
-  svg.append("g")
+  thesvg.append("g")
     .call(grid);
 
-  const circle = svg.append("g")
+  const circle = thesvg.append("g")
   .attr("stroke", "black")
   .selectAll("circle")
   .data(dataAt(year), d => d.name)
@@ -191,19 +199,20 @@ function chart(measure, range, annotation) {
   .attr("cx", d => x(d.govRevCap))
   .attr("cy", d => y(d[measure]))
   .attr("r", d => radius(d.population))
-  .style("display", d => displaycircle(d.govRevCap, d[measure]))
+  .style("display", d => displaycircle(d, measure))
   .attr("fill", d => colorscale(d[ccolor]))
   .call(circle => circle.append("title")
         .text(d => labelText(d,measure)));
 
-  return Object.assign(svg.node(), {
+  return Object.assign(thesvg.node(), {
     update(data) {
       circle.data(data, d => d.name)
         .sort((a, b) => d3.descending(a.population, b.population))
+		.attr("stroke-width", getstroke)
         .attr("cx", d => x(d.govRevCap))
         .attr("cy", d => y(d[measure]))
         .attr("r", d => radius(d.population))
-        .style("display", d => displaycircle(d.govRevCap, d[measure]))
+        .style("display", d => displaycircle(d, measure))
         .attr("fill", d => colorscale(d[ccolor]))
         .call(circle => circle.select("title").text(d => labelText(d,measure)));
     }
@@ -212,5 +221,20 @@ function chart(measure, range, annotation) {
 
 function update()
 {
-	c.update(dataAt(year));
+	var datanow = dataAt(year);
+	c.update(datanow);
+	c2.update(datanow);
+	var countrydata = dataAt(year, false).filter(d => d.name.trim() == country);
+	if (countrydata.length > 0)
+	{
+		var text = makeText(countrydata[0]);
+		d3.select("#countrytext").
+		html(text);
+		d3.select("#countrydata")
+		.style("display", text.length > 0 ? "block" : "none");
+	}
+	else
+	{
+		d3.select("#countrydata").style("display", "none");
+	}
 }
