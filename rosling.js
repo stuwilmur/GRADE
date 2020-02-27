@@ -1,14 +1,9 @@
-var margin = ({top: 20, right: 20, bottom: 35, left: 40})
 var ccolor = "economy";
 var c;
 var c2;
-	var width = 1500;
-	var height = 450;
-
-var margin = ({top: 20, right: 20, bottom: 35, left: 40})
-
-
-
+var width = 1500;
+var height = 450;
+var margin = ({top: 20, right: 20, bottom: 35, left: 100})
 let mapped = new Map();
 var countries;
 
@@ -135,6 +130,7 @@ function load(datalist) {
   c2 = chart(svg2, "matmortality", [0,1500], "Maternal mortality (per 100,000 births)");
   
   setupMenus(countries);
+  updateKey();
 
 }
 
@@ -158,6 +154,22 @@ function getstroke(d)
 {
   var ret = d.name.trim() == country ? 2 : 0.5;
   return ret;
+}
+
+function updateKey()
+{
+	var ordinal = d3.scaleOrdinal(["LIC", "LMIC", "UMIC", "HIC"], d3.schemeCategory10)
+	
+	var legendOrdinal = d3.legendColor()
+    .shape("path", d3.symbol().type(d3.symbolCircle).size(150)())
+    .shapePadding(10)
+	.cellFilter(function(d){ return d.label !== "e" })
+	.scale(ordinal)
+	.title("Legend");
+	
+	svg.select(".legendOrdinal")
+   .call(legendOrdinal)
+   .attr("display", ccolor == "economy" ? "block" : "none");
 }
 
 function loadfile()
@@ -223,6 +235,7 @@ function chart(thesvg, measure, range, annotation) {
 
 function update()
 {
+	console.log("hello");
 	var datanow = dataAt(year);
 	c.update(datanow);
 	c2.update(datanow);
@@ -240,5 +253,5 @@ function update()
 		d3.select("#countrydata").style("display", "none");
 	}
 	
-	// update the legend here
+	updateKey();
 }
