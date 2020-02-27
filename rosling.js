@@ -12,12 +12,11 @@ var margin = ({top: 20, right: 20, bottom: 35, left: 40})
 let mapped = new Map();
 var countries;
 
-function dataAt(year, recompute = true){
+function dataAt(year){
   var res = mapped.filter(function(d) {return d.year == year})
   if (res.length > 0)
   {
-	var data2 = res[0].data.map(function(d){var ret = recompute ? recomputedata(d) : d; return ret;})
-    return data2;
+	return res[0].data.map(recomputedata);
   }
 }
 
@@ -90,6 +89,7 @@ function recomputedata(d){
   var computedRev = getRevenue(d, method);
   e.govRevCap = computedRev[3];
   e.show = d.govRevCap > 0;
+  e.info = makeText(d);
   return e;
 }
 
@@ -201,8 +201,10 @@ function chart(thesvg, measure, range, annotation) {
   .attr("r", d => radius(d.population))
   .style("display", d => displaycircle(d, measure))
   .attr("fill", d => colorscale(d[ccolor]))
-  .call(circle => circle.append("title")
-        .text(d => labelText(d,measure)));
+  .on("mouseover", mouseover)
+  .on("mousemove", mousemove)
+  .on("mouseleave", mouseleave)
+  //.call(circle => circle.append("title").text(d => labelText(d,measure)));
 
   return Object.assign(thesvg.node(), {
     update(data) {
@@ -214,7 +216,7 @@ function chart(thesvg, measure, range, annotation) {
         .attr("r", d => radius(d.population))
         .style("display", d => displaycircle(d, measure))
         .attr("fill", d => colorscale(d[ccolor]))
-        .call(circle => circle.select("title").text(d => labelText(d,measure)));
+        //.call(circle => circle.select("title").text(d => labelText(d,measure)));
     }
   });
 }
@@ -224,10 +226,10 @@ function update()
 	var datanow = dataAt(year);
 	c.update(datanow);
 	c2.update(datanow);
-	var countrydata = dataAt(year, false).filter(d => d.name.trim() == country);
+	var countrydata = datanow.filter(d => d.name.trim() == country);
 	if (countrydata.length > 0)
 	{
-		var text = makeText(countrydata[0]);
+		var text = countrydata[0].info;
 		d3.select("#countrytext").
 		html(text);
 		d3.select("#countrydata")
@@ -237,4 +239,6 @@ function update()
 	{
 		d3.select("#countrydata").style("display", "none");
 	}
+	
+	// update the legend here
 }

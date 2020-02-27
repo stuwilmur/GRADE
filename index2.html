@@ -9,6 +9,8 @@
   </script>
   <script src="https://d3js.org/d3.v5.min.js" type="text/javascript">
   </script>
+  <script src="d3-legend.min.js" type="text/javascript">
+  </script>
   <title>G-LIST bubble charts</title>
   <meta http-equiv="content-type" lang="en" content="text/html; charset=us-ascii"
   xml:lang="en" />
@@ -96,6 +98,11 @@
 
           <p>Year: <span id="yearVal"></span></p>
         </div>
+		<p>Colour scheme:</p>
+		<input type="radio" class ="colourscheme" id="col_economy" name="colourscheme" value="economy" checked = "checked" />
+		<label for="colourscheme">economy</label>
+		<input type="radio" class ="colourscheme" id="col_id" name="colourscheme" value="id" />
+		<label for="colourscheme">country</label>
       </div>
 
 <h2>Download data:</h2>
@@ -118,6 +125,41 @@
   </script>
   <script src = "glist.js" type="text/javascript"></script>
     <script type = "text/javascript">
+	
+	var Tooltip = d3.select("#vis")
+	.append("div")
+	.attr("id", "tooltip")
+	.attr("class", "Tooltip")
+	.append("div")
+    .style("opacity", 0.5)
+    .style("background-color", "white")
+    .style("border", "none")
+    .style("border-width", "1px")
+    .style("border-radius", "0px")
+    .style("padding", "5px")
+    .style("position", "absolute")
+    .style("font-size", "100%")
+	.style("pointer-events", "none")
+	
+	mouseover = function(d) {
+	Tooltip
+	  .style("opacity", .8)
+	}
+
+	mousemove = function(d) {
+	Tooltip
+	  .html(d.info)
+	  .style("left", d3.event.pageX + 10 + "px")
+	  .style("top", d3.event.pageY + 10 + "px")
+	  .style("z-index", 2)
+	}
+
+	mouseleave = function(d) {
+	Tooltip
+	  .style("opacity", 0)
+	d3.select("svg").selectAll("text.data").remove();
+	}
+	
 	var svg = d3.select('#vis').append('svg')
 	.attr('width', width)
 	.attr('height', height)
@@ -129,7 +171,7 @@
 	.attr('height', height)
 	//.attr("viewBox", [0, 0, width, height])
 	.append("g");
-	
+		
 	loadfile();
 	function mainUpdate()
 	{

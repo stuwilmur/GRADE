@@ -350,27 +350,6 @@ initMenus(countries);
 d3.select("#revenueVal").text(govRevenue);
 d3.select("#yearVal").text(year);
 
-function updateLegend()
-{
-		var theOutcome = outcomesMap.get(outcome)
-		var domain = theOutcome.hasOwnProperty("fixedExtent") ? theOutcome.fixedExtent : theOutcome.extent;
-		colorScale.range([theOutcome.loCol, theOutcome.hiCol])
-		.domain(domain);
-		legendLinear.scale(colorScale);
-		
-		svg2.select(".legendLinear").remove();
-		
-		svg2.append("g")
-		.attr("class", "legendLinear")
-		.attr("transform", "translate(0,20)");
-		
-		svg2.select(".legendLinear")
-		.call(legendLinear);
-		
-		svg2.select("text")
-		.text(theOutcome.desc);
-}
-
 
 d3.select("#revSlider").on("input", function(d){
 		govRevenue = this.value / 100.0;
@@ -399,7 +378,13 @@ d3.select("#yearSlider").on("input", function(d){
 
 d3.selectAll(".outcomes").on("input", function(d){
 		outcome = this.value;
-		updateLegend();
+		//updateLegend();
+		mainUpdate();
+});
+
+d3.selectAll(".colourscheme").on("input", function(d){
+		ccolor = this.value;
+		//updateLegend();
 		mainUpdate();
 });
 }
@@ -422,6 +407,27 @@ function updateCountries()
 		d3.select("#countrydata")
 		.style("display", text.length > 0 ? "block" : "none");
 		colourCountries();
+}
+
+function updateLegend()
+{
+		var theOutcome = outcomesMap.get(outcome)
+		var domain = theOutcome.hasOwnProperty("fixedExtent") ? theOutcome.fixedExtent : theOutcome.extent;
+		colorScale.range([theOutcome.loCol, theOutcome.hiCol])
+		.domain(domain);
+		legendLinear.scale(colorScale);
+		
+		svg2.select(".legendLinear").remove();
+		
+		svg2.append("g")
+		.attr("class", "legendLinear")
+		.attr("transform", "translate(0,20)");
+		
+		svg2.select(".legendLinear")
+		.call(legendLinear);
+		
+		svg2.select("text")
+		.text(theOutcome.desc);
 }
 
 function loaded(error, countries, mortalityRate) {
