@@ -15,6 +15,11 @@ function dataAt(year){
   }
 }
 
+function deNaN(x)
+{
+	return isNaN(x) ? 0 : x;
+}
+
 var x = d3.scaleLog([2, 1e5], [margin.left, width - margin.right])
 
 function fy(range){return d3.scaleLinear(range, [height - margin.bottom, margin.top])}
@@ -208,7 +213,7 @@ function chart(thesvg, measure, range, annotation) {
   .join("circle")
   .sort((a, b) => d3.descending(a.population, b.population))
   .attr("stroke-width", getstroke)
-  .attr("cx", d => x(d.govRevCap))
+  .attr("cx", d => deNaN(x(d.govRevCap)))
   .attr("cy", d => y(d[measure]))
   .attr("r", d => radius(d.population))
   .style("display", d => displaycircle(d, measure))
@@ -223,7 +228,7 @@ function chart(thesvg, measure, range, annotation) {
       circle.data(data, d => d.name)
         .sort((a, b) => d3.descending(a.population, b.population))
 		.attr("stroke-width", getstroke)
-        .attr("cx", d => x(d.govRevCap))
+        .attr("cx", d => deNaN(x(d.govRevCap)))
         .attr("cy", d => y(d[measure]))
         .attr("r", d => radius(d.population))
         .style("display", d => displaycircle(d, measure))
@@ -235,7 +240,6 @@ function chart(thesvg, measure, range, annotation) {
 
 function update()
 {
-	console.log("hello");
 	var datanow = dataAt(year);
 	c.update(datanow);
 	c2.update(datanow);
@@ -245,12 +249,12 @@ function update()
 		var text = countrydata[0].info;
 		d3.select("#countrytext").
 		html(text);
-		d3.select("#countrydata")
+		d3.select("#countrydata2")
 		.style("display", text.length > 0 ? "block" : "none");
 	}
 	else
 	{
-		d3.select("#countrydata").style("display", "none");
+		d3.select("#countrydata2").style("display", "none");
 	}
 	
 	updateKey();

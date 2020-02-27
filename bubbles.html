@@ -9,7 +9,7 @@
   </script>
   <script src="https://d3js.org/d3.v5.min.js" type="text/javascript">
   </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.js" type="text/javascript">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js" type="text/javascript">
   </script>
   <title>G-LIST bubble charts</title>
   <meta http-equiv="content-type" lang="en" content="text/html; charset=us-ascii"
@@ -115,7 +115,7 @@
       </div>
     </div>
     <div id="vis"></div>
-		<div class = "output", id="countrydata">
+		<div class = "output", id="countrydata2">
 		<p>
 			<span id="countrytext"></span>
 		</p>
@@ -129,7 +129,7 @@
 	var Tooltip = d3.select("#vis")
 	.append("div")
 	.attr("id", "tooltip")
-	.attr("class", "Tooltip")
+	.attr("class", "tooltip")
 	.append("div")
     .style("opacity", 0.5)
     .style("background-color", "white")

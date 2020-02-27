@@ -14,12 +14,12 @@ body {
 
 .output {
 		float : left;
-		border-radius : 5px;
+		border-radius : 0px;
 		color : #000000;
 		padding : 10px 15px;
 		background : rgba(255, 255, 255, 0.95);
 		border-style : solid;
-		border-color : #040404;
+		border-color : lightgray;
 		border-width : 1px;
 		display : none;
 		pointer-events : none;
@@ -45,10 +45,16 @@ vis {
 		min-width : 0px;
 }
 
-#countrydata
+#countrydata, #countrydata2
 {
 	margin-top : 100px;
 	margin-left : 10px;
+	opacity : 0.8;
+}
+
+#countrydata2
+{
+	float : right;
 }
 
 .sliders
@@ -159,7 +165,7 @@ svg {
   border: none;
 }
 
-[type=radio] { 
+[type=radio].outcomes { 
 position: absolute;
 opacity: 0;
 width: 0;
@@ -167,15 +173,16 @@ height: 0;
 }
 
 /* IMAGE STYLES */
-[type=radio] + img {
+[type=radio].outcomes + img {
 cursor: pointer;
 opacity : .50;
 }
 
 /* CHECKED STYLES */
-[type=radio]:checked + img {
+[type=radio].outcomes:checked + img {
 opacity : 1.00;
 }
+
 
 #revDiv{
 		display : block;

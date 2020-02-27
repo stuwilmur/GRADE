@@ -378,7 +378,7 @@ d3.select("#yearSlider").on("input", function(d){
 
 d3.selectAll(".outcomes").on("input", function(d){
 		outcome = this.value;
-		//updateLegend();
+		updateLegend();
 		mainUpdate();
 });
 
