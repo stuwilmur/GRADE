@@ -63,6 +63,11 @@ vis {
 		margin-bottom : 10px;
 }
 
+#version
+{	
+	font-size : 75%;
+}
+
 ul
 {
 		list-style-type:none;
