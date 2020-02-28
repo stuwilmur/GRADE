@@ -207,15 +207,17 @@ function makeText(dataRow)
 	var text = "<h1 class='tooltip'> " + countryname + "<\/h2 class='tooltip'><br/>";
 	var delta = result[0] - result[2];
 	text = text
+	+ "<strong> Year: <span class = 'ar'>" + year + "<\/span><br/>"
+	+ "<strong> Population: <span class = 'ar'>" + d3.format(",")(dataRow.population) + "<\/span><br/>"
 	+ "<h2 class='tooltip'> Revenue <\/h2><\/br>"
 	+ "<strong>" + "Original GrPC"
-	+ "<\/strong>" + ": <span class='ar'>$" + dataRow.govRevCap.toFixed(0) + "<\/span><br/>"
+	+ "<\/strong>" + ": <span class='ar'>$" + d3.format(",")(dataRow.govRevCap.toFixed(0)) + "<\/span><br/>"
 	+ "<strong>" +  "Percentage GrPC increase"
 	+ "<\/strong>" + ": <span class='ar'>" + newGovRev.toFixed(2) + "%<\/span><br/>"
 	+ "<strong>" +  "Absolute extra revenue" 
-	+ "<\/strong>" + ": <span class='ar'>$" + newGovAbsRev.toFixed(2) + prefix + "<\/span><br/>"
+	+ "<\/strong>" + ": <span class='ar'>$" + d3.format(",")(newGovAbsRev.toFixed(2)) + prefix + "<\/span><br/>"
 	+ "<strong>" +  "Extra revenue per capita" 
-	+ "<\/strong>" + ": <span class='ar'>$" + newAdditionalPCGovRev.toFixed(0) + "<\/span><br/>"
+	+ "<\/strong>" + ": <span class='ar'>$" + d3.format(",")(newAdditionalPCGovRev.toFixed(0)) + "<\/span><br/>"
 	+ "<h2 class='tooltip'>" + outcomesMap.get(outcome).name + " <\/h2><\/br>"
 	+ "<strong> Original " + outcomesMap.get(outcome).name 
 	+ "<\/strong>" + ": <span class='ar'>" + result[2].toFixed(2) + "<\/span><br/>";
@@ -229,7 +231,7 @@ function makeText(dataRow)
 	+ "<strong>" +  "Per-capita cost of single life"
 	+ "<\/strong>" + ": <span class='ar'>$" + costs[0].toFixed(2) + "<\/span><br/>"
 	+ "<strong>" +  "Absolute cost of single life" 
-	+ "<\/strong>" + ": <span class='ar'>$" + (costs[1] / prefixValue).toFixed(2) + prefix + "<\/span><br/>"
+	+ "<\/strong>" + ": <span class='ar'>$" + d3.format(",")((costs[1] / prefixValue).toFixed(2)) + prefix + "<\/span><br/>"
 	//+ "<strong>" +  "Increase in GRpC" 
 	//+ "<\/strong>" + ": <span class='ar'>" + costs[2].toFixed(2) + "%<\/span><br/>";
 	
