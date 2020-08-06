@@ -1,2 +1,2 @@
 # g-list2
-Updated G-LIST using new model
+Updated G-LIST (now renamed GRADE) using new model
