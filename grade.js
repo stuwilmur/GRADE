@@ -19,29 +19,29 @@ var outcomesList = [
 		[ "mortality",                                  
 				{ 
 						name : "U5 Mortality",  
-						loCol : "#279b48",              
-						hiCol : "#a61414",              
+						loCol : "#0099ff",              
+						hiCol : "#e09900",              
 						desc: "Under-five mortality (per 1000 live births)"}], 
 		[ "matMortality",                                       
 				{ 
 						name : "Maternal Mortality",    
-						loCol : "#279b48",              
-						hiCol : "#a61414",              
+						loCol : "#0099ff",              
+						hiCol : "#e09900",              
 						desc: "Maternal mortality (per 100,000 births)"}], 
 		/*[ "PScompletion",
 				{
 						name : "Primary School Completion Rate", 
-						loCol : "#85c1e9", 
-						hiCol : "#c31f33",
+						loCol : "#0099ff",              
+						hiCol : "#e09900",    
 						fixedExtent : [0,100],
 						desc : "Primary School Completion (%)"}],
 		[ "Immunisation",                                                       // column heading in csv file
 				{                                       
-						name : "Immunisation Rate",             // Name (full text)
+						name : "Immunisation Rate",             				// Name (full text)
 						loCol : "#a93226",                                      // Colour for low end of scale
 						hiCol : "#00aed9",                                      // Colour for high end of scale
-						fixedExtent : [0,100],                          // OPTIONAL: fixed scale limits (else automatic)
-						desc : "Immunisation Rate (%)"}]        // Description
+						fixedExtent : [0,100],                          		// OPTIONAL: fixed scale limits (else automatic)
+						desc : "Immunisation Rate (%)"}]        				// Description
 		*/
 ];
 
