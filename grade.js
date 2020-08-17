@@ -19,13 +19,13 @@ var outcomesList = [
 		[ "mortality",                                  
 				{ 
 						name : "U5 Mortality",  
-						loCol : "#0099ff",              
+						loCol : "#dee5f8",              
 						hiCol : "#e09900",              
 						desc: "Under-five mortality (per 1000 live births)"}], 
 		[ "matMortality",                                       
 				{ 
 						name : "Maternal Mortality",    
-						loCol : "#0099ff",              
+						loCol : "#dee5f8",              
 						hiCol : "#e09900",              
 						desc: "Maternal mortality (per 100,000 births)"}], 
 		/*[ "PScompletion",
