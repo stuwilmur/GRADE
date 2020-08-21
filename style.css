@@ -93,7 +93,7 @@ select {
 
 margin-top: 20px;
 margin-bottom: 20px;
-padding: 5px 35px 5px 5px;
+padding: 5px 5px 5px 5px;
 font-size: 16px;
 border: 1px solid #ccc;
 height: 34px;
@@ -101,6 +101,28 @@ font-family: 'Open Sans', Helvetica, sans-serif;
 -webkit-appearance: none;
 -moz-appearance: none;
 appearance: none;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0;
+}
+
+input[type=number] { 
+  width: 120px;
+  height: 34px;
+  line-height: 1.65;
+margin-top: 20px;
+margin-bottom: 20px;
+padding: 5px 5px 5px 5px;
+font-size: 16px;
+  display: block;
+  padding: 0;
+  margin: 0;
+  padding-left: 20px;
+  border: 1px solid #eee;
+  font-family: 'Open Sans', Helvetica, sans-serif;
 }
 
 .countries {
@@ -190,7 +212,7 @@ opacity : 1.00;
 
 
 #revDiv{
-		display : block;
+		display : none;
 }
 
 #absRevDiv{
@@ -269,8 +291,15 @@ a{
 
 .ar { float:right }
 
-.tooltip{
+div.tooltip{
 		font-size : 100%;
+		border-radius : 0px;
+        color : #000000;
+        padding : 10px 15px;
+        background : rgba(255, 255, 255, 0.85);
+		border-style : solid;
+		border-color : #040404;
+		border-width : 0px;
 }
 
 h1.tooltip{

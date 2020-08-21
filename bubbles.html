@@ -41,13 +41,17 @@
         <select id="countrylist" name="country">
           </select>
 
-        <p>Specify additoinal revenue as:</p><select id="methodlist" name="method">
+        <p>Specify revenue as:</p><select id="methodlist" name="method">
+		  <option value="newgrpc">
+            New government revenue per capita
+          </option>
+		
           <option value="percentage">
-            Percentage of gov. rev. per capita
+            Increase as percentage of gov. rev. per capita
           </option>
 
           <option value="absolute">
-            Absolute extra revenue
+            Absolute additional revenue
           </option>
 
           <option value="pc">
@@ -56,12 +60,16 @@
         </select>
 		
 		<select id="prefix" name="prefix">
+		  <option value="U">
+            USD
+          </option>
+		
           <option value="M">
-            Millions (M USD)
+            Millions (M) USD
           </option>
 
           <option value="B">
-            Billions (B USD)
+            Billions (B) USD
           </option>
         </select>
       </div>
@@ -69,31 +77,40 @@
       <div class="sliders">
         <div class="slidecontainer">
           <div id="revDiv">
-            <input type="range" name="revSlider" id="revSlider" class="slider" min="0"
+            <input type="number" name="revSlider" id="revSlider" class="slider" min="0"
             max="100" value="0" />
 
             <p>Additional Revenue (% of GRpC): <span id="revenueVal">0%</span></p>
           </div>
 
           <div id="absRevDiv">
-            <input type="range" name="absRevSlider" id="absRevSlider" class="slider" min=
+            <input type="number" name="absRevSlider" id="absRevSlider" class="slider" min=
             "0" max="1000" value="0" />
 
-            <p>Additional Revenue (Millions of USD): <span id=
+            <p>Additional Revenue (USD): <span id=
             "absRevenueVal">$0M</span></p>
           </div>
 
           <div id="pcRevDiv">
-            <input type="range" name="pcRevSlider" id="pcRevSlider" class="slider" min=
+            <input type="number" name="pcRevSlider" id="pcRevSlider" class="slider" min=
             "0" max="1000" value="0" />
 
             <p>Additional Revenue (USD per capita): <span id=
             "perCapitaRevenueVal">$0</span></p>
           </div>
+		  
+		  <div id="grpcdiv">
+            <input type="number" name="grpcSlider" id="grpcSlider" class="numeric" min=
+            "0" max="1000" value="0" />
+
+            <p>New gov. rev. per capita(USD): <span id=
+            "grpcVal">$0</span></p>
+          </div>
+		  
         </div>
 
         <div class="slidecontainer">
-          <input type="range" name="yearSlider" id="yearSlider" class="slider" min="1980"
+          <input type="range" name="yearSlider" id="yearSlider" class="slider" min="1990"
           max="2016" value="2016" />
 
           <p>Year: <span id="yearVal"></span></p>

@@ -5,14 +5,14 @@ var countryById = d3.map();
 var legendLinear;
 
 var govRevenue = 0;
+var enteredGrpc = 0;
 var absGovRev = 0;
 var absGovRevSlider = 0;
 var pcGovRev = 0;
 var year = 2016;
 var country = "$-ALL";
-var method = "percentage"
-var prefix = "M";
-var prefixValue = 1E6;
+var method = "newgrpc"
+var prefix = "U";
 
 // **** add or update outcomes here ****
 var outcomesList = [
@@ -55,8 +55,8 @@ const cUMIC  = 3;
 const cHIC  = 4;
 
 // **** edit here if the coefficients are to be updated ****
-const betaU5M = 1472;
-const betaMMR = 576.6;
+const betaU5M = 1472.179;
+const betaMMR = 576.695;
 		
 function getRevenue(d, m)
 {
@@ -72,6 +72,13 @@ function getRevenue(d, m)
 				var newGovRev = newGRPC / d.govRevCap - 1;
 				var newAbsRev = (d.govRevCap * (newGovRev)) * d.population;
 				return [newGovRev, newAbsRev, pcGovRev, newGRPC];
+		}
+		else if (m == "newgrpc")
+		{
+				var newGRPC = enteredGrpc > d.govRevCap ? enteredGrpc : d.govRevCap;
+				var newGovRev = newGRPC / d.govRevCap - 1;
+				var newAbsRev = (d.govRevCap * (newGovRev)) * d.population;
+				return [newGovRev, newAbsRev, newGRPC - d.govRevCap, newGRPC];
 		}
 		else
 		{
@@ -90,6 +97,7 @@ function computeResult(d, type)
 		var computedRevenue = getRevenue(d, method);
 		
 		var increase = computedRevenue[0];
+		var grpc = computedRevenue[3];
 		if (type == "mortality")
 		{
 				if (d.mortality > 0)
@@ -97,7 +105,8 @@ function computeResult(d, type)
 						var effectOnU5m = 0;
 						if (d.govRevCap > 0 )
 						{
-								effectOnU5m = Math.min(betaU5M / d.govRevCap  * increase, d.mortality)
+								var effect = betaU5M / d.govRevCap - betaU5M / grpc;
+								effectOnU5m = Math.min(effect, d.mortality);
 						}
 						var livesSaved = effectOnU5m * d.u5Pop / 1000;
 						var u5m = d.mortality - effectOnU5m;
@@ -114,9 +123,11 @@ function computeResult(d, type)
 						var effectOnMmr = 0;
 						if ( d.govRevCap > 0 )
 						{
-								effectOnMmr = Math.min(betaMMR / Math.pow(Math.log(d.govRevCap), 2.0) * increase, d.matMortality);
+								var effect = betaMMR / Math.log(d.govRevCap) - betaMMR / Math.log(grpc);
+								effectOnMmr = Math.min(effect, d.matMortality);
 						}
-						var livesSaved = effectOnMmr * d.BIRTHS / 100000;
+						var births = d.birthRate / 1000 * d.population;
+						var livesSaved = effectOnMmr * births / 100000;
 						var mmr = d.matMortality - effectOnMmr;
 						return [mmr, d.govRevCap > 0 ? livesSaved : NaN, +d.matMortality];
 				}
@@ -146,7 +157,7 @@ function computeCostPerLife(d, type, newAdditionalPCGovRev, livesSaved)
 		}
 		else if (type == "matMortality")
 		{
-				pop = d.BIRTHS;
+				pop = d.birthRate / 1000 * d.population;
 		}
 		if (livesSaved > 0)
 		{
@@ -172,6 +183,7 @@ function typeAndSet(d) {
 		d.matMortality = d.MATMORTALITY;
 		d.population = +d.POPULATION;
 		d.country = d.COUNTRY;
+		d.birthRate = +d.BIRTHRATEPERTHOU;
 
 		countryById.set(d.ISO + d.YEAR, d);
 		return d;
@@ -199,7 +211,7 @@ function makeText(dataRow)
 	var result = computeResult(dataRow, outcome);
 	var revenues = getRevenue(dataRow, method);
 	var newGovRev = 100 * revenues[0];
-	var newGovAbsRev = revenues[1] / prefixValue;
+	var newGovAbsRev = revenues[1] / getPrefixValue(prefix);
 	var newAdditionalPCGovRev = revenues[2];
 	var livesSaved = result[1];
 	var costs = computeCostPerLife(dataRow, outcome, newAdditionalPCGovRev, livesSaved);
@@ -215,7 +227,7 @@ function makeText(dataRow)
 	+ "<strong>" +  "Percentage GrPC increase"
 	+ "<\/strong>" + ": <span class='ar'>" + newGovRev.toFixed(2) + "%<\/span><br/>"
 	+ "<strong>" +  "Absolute extra revenue" 
-	+ "<\/strong>" + ": <span class='ar'>$" + d3.format(",")(newGovAbsRev.toFixed(2)) + prefix + "<\/span><br/>"
+	+ "<\/strong>" + ": <span class='ar'>$" + d3.format(",")(newGovAbsRev.toFixed(2)) + getPrefix(prefix) + "<\/span><br/>"
 	+ "<strong>" +  "Extra revenue per capita" 
 	+ "<\/strong>" + ": <span class='ar'>$" + d3.format(",")(newAdditionalPCGovRev.toFixed(0)) + "<\/span><br/>"
 	+ "<h2 class='tooltip'>" + outcomesMap.get(outcome).name + " <\/h2><\/br>"
@@ -231,11 +243,29 @@ function makeText(dataRow)
 	//+ "<strong>" +  "Per-capita cost of single life"
 	//+ "<\/strong>" + ": <span class='ar'>$" + costs[0].toFixed(2) + "<\/span><br/>"
 	+ "<strong>" +  "Absolute cost of single life" 
-	+ "<\/strong>" + ": <span class='ar'>$" + d3.format(",")((costs[1] / prefixValue).toFixed(2)) + prefix + "<\/span><br/>"
+	+ "<\/strong>" + ": <span class='ar'>$" + d3.format(",")((costs[1] / getPrefixValue(prefix)).toFixed(2)) + getPrefix(prefix) + "<\/span><br/>"
 	//+ "<strong>" +  "Increase in GRpC" 
 	//+ "<\/strong>" + ": <span class='ar'>" + costs[2].toFixed(2) + "%<\/span><br/>";
 	
 	return text;	
+}
+
+function getPrefix(p)
+{
+	if (p == "U")
+		return "";
+	else
+		return p;
+}
+
+function getPrefixValue(p)
+{
+	if (p == "B")
+		return 1000000000;
+	else if (p == "M")
+		return 1000000;
+	else 
+		return 1;
 }
 
 function getText(d) {
@@ -309,6 +339,8 @@ function setupMenus(countries)
 							.style("display", "none")
 							d3.select("#prefix")
 							.style("display", "none")
+							d3.select("#grpcdiv")
+							.style("display", "none")
 					}
 					else if (method == "pc")
 					{
@@ -320,6 +352,21 @@ function setupMenus(countries)
 							.style("display", "block")
 							d3.select("#prefix")
 							.style("display", "none")
+							d3.select("#grpcdiv")
+							.style("display", "none")
+					}
+					else if (method == "newgrpc")
+					{
+							d3.select("#revDiv")
+							.style("display", "none")
+							d3.select("#absRevDiv")
+							.style("display", "none")
+							d3.select("#pcRevDiv")
+							.style("display", "none")
+							d3.select("#prefix")
+							.style("display", "none")
+							d3.select("#grpcdiv")
+							.style("display", "block")
 					}
 					else
 					{
@@ -331,6 +378,8 @@ function setupMenus(countries)
 							.style("display", "none")
 							d3.select("#prefix")
 							.style("display", "block")
+							d3.select("#grpcdiv")
+							.style("display", "none")
 					}										
 					mainUpdate();
 			})
@@ -340,9 +389,9 @@ function setupMenus(countries)
 			{
 				prefix = this.options[this.selectedIndex].value;
 				var sliderVar = document.getElementById('#absRevSlider');
-				prefixValue = prefix == "M" ? 1E6 : 1E9;
+				var prefixValue = getPrefixValue(prefix);
 				absGovRev = absGovRevSlider * prefixValue;
-				d3.select("#absRevenueVal").text("$" + Math.round(absGovRev / prefixValue) + prefix);
+				d3.select("#absRevenueVal").text("$" + Math.round(absGovRev / prefixValue) + getPrefix(prefix));
 				mainUpdate();
 			}
 			)
@@ -361,8 +410,8 @@ d3.select("#revSlider").on("input", function(d){
 
 d3.select("#absRevSlider").on("input", function(d){
 		absGovRevSlider = this.value;
-		absGovRev = absGovRevSlider * prefixValue;
-		d3.select("#absRevenueVal").text("$" + Math.round(absGovRev / prefixValue) + prefix);
+		absGovRev = absGovRevSlider * getPrefixValue(prefix);
+		d3.select("#absRevenueVal").text("$" + Math.round(absGovRev / getPrefixValue(prefix)) + prefix);
 		mainUpdate();
 });
 
@@ -371,6 +420,12 @@ d3.select("#pcRevSlider").on("input", function(d){
 		d3.select("#perCapitaRevenueVal").text("$" + Math.round(pcGovRev));
 		mainUpdate();
 });
+d3.select("#grpcSlider").on("input", function(d){
+		enteredGrpc = this.value * 1;
+		d3.select("#grpcVal").text("$" + enteredGrpc);
+		mainUpdate();
+});
+
 
 d3.select("#yearSlider").on("input", function(d){
 		year = this.value;
@@ -483,10 +538,13 @@ function loaded(error, countries, mortalityRate) {
 		}); 
 		d3.select("#absRevSlider").on("change", function(){
 		  absGovRevSlider = this.value;
-		  absGovRev = absGovRevSlider * prefixValue;
+		  absGovRev = absGovRevSlider * getPrefixValue(prefix);
 		})
 		d3.select("#pcRevSlider").on("change", function(){
 		  pcGovRev = this.value * 1;
+		});
+		d3.select("#grpcSlider").on("change", function(){
+		  enteredGrpc = this.value * 1;
 		});
 		
 
