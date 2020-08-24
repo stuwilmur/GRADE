@@ -108,7 +108,8 @@ function computeResult(d, type)
 								var effect = betaU5M / d.govRevCap - betaU5M / grpc;
 								effectOnU5m = Math.min(effect, d.mortality);
 						}
-						var livesSaved = effectOnU5m * d.u5Pop / 1000;
+						var births = d.birthRate / 1000 * d.population;
+						livesSaved = effectOnU5m * births / 1000;
 						var u5m = d.mortality - effectOnU5m;
 						return [u5m, d.govRevCap > 0 ? livesSaved : NaN, +d.mortality];
 				}
