@@ -100,10 +100,10 @@ function computeResult(d, type)
 		var grpc = computedRevenue[3];
 		if (type == "mortality")
 		{
-				if (d.mortality > 0)
+				if (d.mortality > 0 && d.govRevCap > 0)
 				{
 						var effectOnU5m = 0;
-						if (d.govRevCap > 0 )
+						if (d.govRevCap > 0 || true)
 						{
 								var effect = betaU5M / d.govRevCap - betaU5M / grpc;
 								effectOnU5m = Math.min(effect, d.mortality);
@@ -119,10 +119,10 @@ function computeResult(d, type)
 		}
 		else if (type == "matMortality" )
 		{
-				if (d.matMortality > 0)
+				if (d.matMortality > 0 && d.govRevCap > 0)
 				{
 						var effectOnMmr = 0;
-						if ( d.govRevCap > 0 )
+						if ( d.govRevCap > 0 || true )
 						{
 								var effect = betaMMR / Math.log(d.govRevCap) - betaMMR / Math.log(grpc);
 								effectOnMmr = Math.min(effect, d.matMortality);
