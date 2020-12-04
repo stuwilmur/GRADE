@@ -247,7 +247,7 @@ function makeText(dataRow)
 	//+ "<strong>" +  "Per-capita cost of single life"
 	//+ "<\/strong>" + ": <span class='ar'>$" + costs[0].toFixed(2) + "<\/span><br/>"
 	+ "<strong>" +  "Absolute cost of single life" 
-	+ "<\/strong>" + ": <span class='ar'>$" + d3.format(",")((costs[1] / getPrefixValue(prefix)).toFixed(2)) + getPrefix(prefix) + "<\/span><br/>"
+	+ "<\/strong>" + ": <span class='ar'>$" + d3.format(",")((costs[1]).toFixed(2)) + "<\/span><br/>"
 	//+ "<strong>" +  "Increase in GRpC" 
 	//+ "<\/strong>" + ": <span class='ar'>" + costs[2].toFixed(2) + "%<\/span><br/>";
 	
