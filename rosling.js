@@ -26,7 +26,7 @@ function fy(range){return d3.scaleLinear(range, [height - margin.bottom, margin.
 
 var radius = d3.scaleSqrt([0, 5e8], [0, width / 30])
 
-var colorscale = d3.scaleOrdinal([1, 2, 3, 4], d3.schemeCategory10)
+var colorscale = d3.scaleOrdinal(["LIC", "LMC", "UMC", "HIC"], d3.schemeCategory10)
 
 function xAxis(g)
 {
@@ -98,38 +98,41 @@ function load(datalist) {
   var data = datalist[0];		
 		
   var countriesnested = d3.nest()
-  .key(function(d) { return d.YEAR; })
+  .key(function(d) { return d.year; })
   .entries(data);
   
   countries = d3.nest()
-  .key(function(d) { return d.COUNTRY; })
+  .key(function(d) { return d.countryname; })
   .entries(data)
   .map(d => d.key)
   //.filter(d => d.length > 0)
   .sort()
   .map(function(d) {return {properties : {name : d}}});
   
-  mapped = countriesnested.map( function(d){
+  mapped = countriesnested.map( function(d,id){
   var obd = {year : +d.key, 
-             data : d.values.map( function(e){
+             data : d.values.map( function(e,ie){
                var obe = {
                  year : +d.key,
-                 name:  e.COUNTRY, 
-                 iso : e.ISO,  
-                 id : +e.ID,  
-                 economy : +e.INCOME,
-                 population : +e.POPULATION, 
+                 name:  e.countryname, 
+                 iso : e.countrycode,  
+                 id : ie,  
+                 economy : e.incomelevel,
+                 population : +e["Population, total"], 
+                 birthRate : +e["Birth rate, crude (per 1,000 people)"],
                  govRevCap : +e.GOVREVPERCAP, 
-                 u5deaths : +e.U5DEATHS, 
-                 u5Pop : +e.U5POP, 
-                 births : +e.BIRTHS, 
-                 matdeaths : +e.MATDEATHS, 
-                 mortality : +e.U5MORTALITY, 
-                 matMortality : +e.MATMORTALITY}
+                 //u5deaths : +e.U5DEATHS, 
+                 //u5Pop : +e.U5POP, 
+                 //births : +e.BIRTHS, 
+                 //matdeaths : +e.MATDEATHS, 
+                 mortality : +e.U5M, 
+                 matMortality : +e.MMR}
                return obe;
              })}
   return obd;
   ; })
+    
+  console.log(mapped);
   
   c = chart(svg, "mortality", [0,300], "Under-5 mortality (per 1000 births)");
   c2 = chart(svg2, "matmortality", [0,1500], "Maternal mortality (per 100,000 births)");
@@ -143,10 +146,10 @@ function displaycircle(d, measure)
 {
   if (d.name.trim() == country
   || (country == "$-ALL")
-  || (country == "$-HIC" && d.economy == 4)
-  || (country == "$-UMIC" && d.economy == 3)
-  || (country == "$-LMIC" && d.economy == 2)
-  || (country == "$-LIC" && d.economy == 1)
+  || (country == "$-HIC" && d.economy == "HIC")
+  || (country == "$-UMIC" && d.economy == "UMC")
+  || (country == "$-LMIC" && d.economy == "LMC")
+  || (country == "$-LIC" && d.economy == "LIC")
   )
   {
 	  if (d.show && !isNaN(d[measure]))
@@ -179,7 +182,7 @@ function updateKey()
 
 function loadfile()
 {
-	var files = ["lives saved data.csv"];
+	var files = ["GRADE-Mortality%20Dec%202020.csv"];
 	var promises = [];
 
 	files.forEach(function(url) {

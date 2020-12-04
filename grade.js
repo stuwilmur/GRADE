@@ -9,7 +9,7 @@ var enteredGrpc = 0;
 var absGovRev = 0;
 var absGovRevSlider = 0;
 var pcGovRev = 0;
-var year = 2016;
+var year = 2018;
 var country = "$-ALL";
 var method = "newgrpc"
 var prefix = "U";
@@ -48,11 +48,11 @@ var outcomesList = [
 let outcomesMap = new Map(outcomesList);
 var outcome = "mortality";
 
-
-const cLIC  = 1;
-const cLMIC  = 2;
-const cUMIC  = 3;               
-const cHIC  = 4;
+// used with old spreadsheet where income was a numerical value
+// const cLIC  = 1;
+// const cLMIC  = 2;
+// const cUMIC  = 3;               
+// const cHIC  = 4;
 
 // **** edit here if the coefficients are to be updated ****
 const betaU5M = 1472.179;
@@ -173,20 +173,23 @@ function computeCostPerLife(d, type, newAdditionalPCGovRev, livesSaved)
 
 
 function typeAndSet(d) {
-		d.income = d.INCOME;
+		d.income = d.incomelevel;
 		d.govRevCap = +d.GOVREVPERCAP;
-		d.deaths = d.U5DEATHS;
-		d.u5Pop = d.U5POP;
-		d.u5Deaths = d.U5DEATHS;
-		d.births = d.BIRTHS;
-		d.matDeaths = d.MATDEATHS;
-		d.mortality = d.U5MORTALITY;
-		d.matMortality = d.MATMORTALITY;
-		d.population = +d.POPULATION;
-		d.country = d.COUNTRY;
-		d.birthRate = +d.BIRTHRATEPERTHOU;
+    
+        // the following are deprecated
+		//d.deaths = d.U5DEATHS;                                    
+		//d.u5Pop = d.U5POP;
+		//d.u5Deaths = d.U5DEATHS;
+		//d.births = d.BIRTHS;
+		//d.matDeaths = d.MATDEATHS;
+    
+		d.mortality = d.U5M;                                      
+		d.matMortality = d.MMR;                                   
+		d.population = +d["Population, total"];                   
+		d.country = d.countryname;                                
+		d.birthRate = +d["Birth rate, crude (per 1,000 people)"];
 
-		countryById.set(d.ISO + d.YEAR, d);
+		countryById.set(d.countrycode + d.year, d);
 		return d;
 }
 
@@ -195,10 +198,10 @@ function getColor(d) {
 		if (dataRow) {
 				var results = computeResult(dataRow, outcome);
 				if (country == "$-ALL" || country == d.id       
-				|| country == "$-LIC"   && dataRow.income == cLIC 
-				|| country == "$-LMIC" && dataRow.income == cLMIC
-				|| country == "$-UMIC" && dataRow.income == cUMIC
-				|| country == "$-HIC"   && dataRow.income == cHIC)
+				|| country == "$-LIC"   && dataRow.income == "LIC" 
+				|| country == "$-LMIC" && dataRow.income == "LMC"
+				|| country == "$-UMIC" && dataRow.income == "UMC"
+				|| country == "$-HIC"   && dataRow.income == "HIC")
 						return colorScale(results[0]);
 				else
 						return "rgba(0, 0, 0, 0.3)";
@@ -216,7 +219,7 @@ function makeText(dataRow)
 	var newAdditionalPCGovRev = revenues[2];
 	var livesSaved = result[1];
 	var costs = computeCostPerLife(dataRow, outcome, newAdditionalPCGovRev, livesSaved);
-	var countryname = dataRow.hasOwnProperty("COUNTRY") ? dataRow.COUNTRY : dataRow.name;
+	var countryname = dataRow.hasOwnProperty("country") ? dataRow.country : dataRow.name;
 	var text = "<h1 class='tooltip'> " + countryname + "<\/h2 class='tooltip'><br/>";
 	var delta = result[0] - result[2];
 	text = text
@@ -392,7 +395,7 @@ function setupMenus(countries)
 				var sliderVar = document.getElementById('#absRevSlider');
 				var prefixValue = getPrefixValue(prefix);
 				absGovRev = absGovRevSlider * prefixValue;
-				d3.select("#absRevenueVal").text("$" + Math.round(absGovRev / prefixValue) + getPrefix(prefix));
+				d3.select("#absRevenueVal").text("$" + d3.format(",")(Math.round(absGovRev / prefixValue)) + getPrefix(prefix));
 				mainUpdate();
 			}
 			)
@@ -412,18 +415,18 @@ d3.select("#revSlider").on("input", function(d){
 d3.select("#absRevSlider").on("input", function(d){
 		absGovRevSlider = this.value;
 		absGovRev = absGovRevSlider * getPrefixValue(prefix);
-		d3.select("#absRevenueVal").text("$" + Math.round(absGovRev / getPrefixValue(prefix)) + prefix);
+		d3.select("#absRevenueVal").text("$" + d3.format(",")(Math.round(absGovRev / getPrefixValue(prefix))) + getPrefix(prefix));
 		mainUpdate();
 });
 
 d3.select("#pcRevSlider").on("input", function(d){
 		pcGovRev = this.value * 1;
-		d3.select("#perCapitaRevenueVal").text("$" + Math.round(pcGovRev));
+		d3.select("#perCapitaRevenueVal").text("$" + d3.format(",")(Math.round(pcGovRev)));
 		mainUpdate();
 });
 d3.select("#grpcSlider").on("input", function(d){
 		enteredGrpc = this.value * 1;
-		d3.select("#grpcVal").text("$" + enteredGrpc);
+		d3.select("#grpcVal").text("$" + d3.format(",")(enteredGrpc));
 		mainUpdate();
 });
 

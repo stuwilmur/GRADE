@@ -95,7 +95,7 @@
             "0" max="1000" value="0" />
 
             <p>Additional Revenue (USD): <span id=
-            "absRevenueVal">$0M</span></p>
+            "absRevenueVal">$0</span></p>
           </div>
 
           <div id="pcRevDiv">
@@ -117,7 +117,7 @@
 
         <div class="slidecontainer">
           <input type="range" name="yearSlider" id="yearSlider" class="slider" min="1990"
-          max="2016" value="2016" />
+          max="2018" value="2018" />
 
           <p>Year: <span id="yearVal"></span></p>
         </div>
@@ -137,10 +137,10 @@
 
 <h2>Download data:</h2>
 <ul>
-<li><a href = "GRADE.xlsx">Excel workbook</a></li>
-<li><a href = "lives saved data.csv">Input data (CSV)</a></li>
+<li><a href = "GRADE-Mortality%20Dec%202020.xlsx">Excel workbook</a></li>
+<li><a href = "GRADE-Mortality%20Dec%202020.csv">Input data (CSV)</a></li>
 </ul>
-<p id="version">v1.6 24/08/20</p>
+<p id="version">v1.7 04/12/20</p>
       <div>
         
       </div>
@@ -196,7 +196,7 @@ interpolate(d3.interpolateLab);
 
 	queue()
 		.defer(d3.json, "countries.json")
-		.defer(d3.csv, "lives saved data.csv", typeAndSet) // process
+		.defer(d3.csv, "GRADE-Mortality Dec 2020.csv", typeAndSet) // process
 		.await(loaded);
   </script>
 </body>
