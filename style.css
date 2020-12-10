@@ -320,3 +320,8 @@ h2.tooltip{
 {
 		font-weight : normal;
 }
+
+.subtext
+{
+    font-size: 80%;
+}

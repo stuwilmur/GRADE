@@ -3,128 +3,124 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-  <meta name="generator" content=
-  "HTML Tidy for Linux (vers 25 March 2009), see www.w3.org" />
+    <meta name="generator" content="HTML Tidy for Linux (vers 25 March 2009), see www.w3.org" />
 
-  <title>GRADE</title>
-  <meta http-equiv="content-type" lang="en" content="text/html; charset=us-ascii"
-  xml:lang="en" />
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans&amp;display=swap" rel=
-  "stylesheet" type="text/css" />
-  <link rel="icon" href="data:," />
-  <link rel="stylesheet" type="text/css" href="style.css">
-  </style>
+    <title>GRADE</title>
+    <meta http-equiv="content-type" lang="en" content="text/html; charset=us-ascii" xml:lang="en" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans&amp;display=swap" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" type="text/css" href="style.css">
+    </style>
 </head>
 
 <body>
 
-<script src="https://d3js.org/d3.v3.min.js" type="text/javascript">
-</script>
-<script src="https://d3js.org/queue.v1.min.js" type="text/javascript">
-</script>
-<script src="https://d3js.org/topojson.v1.min.js" type="text/javascript">
-</script>
+    <script src="https://d3js.org/d3.v3.min.js" type="text/javascript">
+    </script>
+    <script src="https://d3js.org/queue.v1.min.js" type="text/javascript">
+    </script>
+    <script src="https://d3js.org/topojson.v1.min.js" type="text/javascript">
+    </script>
 
-<script src="tooltip.js" type="text/javascript">
-</script>
-<script src="d3-legend.min.js" type="text/javascript">
-</script>
+    <script src="tooltip.js" type="text/javascript">
+    </script>
+    <script src="d3-legend.min.js" type="text/javascript">
+    </script>
 
-  <div class="all">
-    <div class="menu">
-      <div class="inline-div">
-		<div class="item">
-			<a href = http://med.st-andrews.ac.uk/grade/>
-				<h2 class="label success new-label"><span class="align">GRADE Homepage</span></h2>
-			</a>	
-		</div>
-	  </div>
+    <div class="all">
+        <div class="menu">
+            <div class="inline-div">
+                <div class="item">
+                    <a href=http://med.st-andrews.ac.uk/grade />
+                    <h2 class="label success new-label"><span class="align">GRADE Homepage</span></h2>
+                    </a>
+                </div>
+            </div>
 
-      <h2>GRADE</h2>
+            <h2>GRADE</h2>
 
-      <p>Hover over a country to show information.</p>
+            <p>
+                Hover over a country to show information.<br />
+            <div class="subtext">
+                Countries for which no Gov. rev. available shown in black.<br />
+                All figures in USD.
+            </div>
+            </p>
 
-      <div>
-        <select id="countrylist" name="country">
-          </select>
+            <div>
+                <select id="countrylist" name="country">
+                </select>
 
-        <p>Specify revenue as:</p><select id="methodlist" name="method">
-		  <option value="newgrpc">
-            New government revenue per capita
-          </option>
-		
-          <option value="percentage">
-            Increase as percentage of gov. rev. per capita
-          </option>
+                <p>Specify revenue as:</p><select id="methodlist" name="method">
 
-          <option value="absolute">
-            Absolute additional revenue
-          </option>
+                    <option value="absolute">
+                        Absolute additional revenue
+                    </option>
 
-          <option value="pc">
-            Additional revenue per capita
-          </option>
-        </select>
-		
-		<select id="prefix" name="prefix">
-		  <option value="U">
-            USD
-          </option>
-		
-          <option value="M">
-            Millions (M) USD
-          </option>
+                    <option value="pc">
+                        Additional revenue per capita
+                    </option>
 
-          <option value="B">
-            Billions (B) USD
-          </option>
-        </select>
-      </div>
+                    <option value="percentage">
+                        Increase as percentage of gov. rev. per capita
+                    </option>
+                    <option value="newgrpc" selected="true">
+                        New government revenue per capita
+                    </option>
 
-      <div class="sliders">
-        <div class="slidecontainer">
-          <div id="revDiv">
-            <input type="number" name="revSlider" id="revSlider" class="numeric" min="0"
-            max="100" value="0" />
+                </select>
 
-            <p>Additional Revenue (% of GRpC): <span id="revenueVal">0%</span></p>
-          </div>
+                <select id="prefix" name="prefix">
+                    <option value="U">
+                        USD
+                    </option>
 
-          <div id="absRevDiv">
-            <input type="number" name="absRevSlider" id="absRevSlider" class="numeric" min=
-            "0" max="1000" value="0" />
+                    <option value="M">
+                        Millions (M) USD
+                    </option>
 
-            <p>Additional Revenue (USD): <span id=
-            "absRevenueVal">$0</span></p>
-          </div>
+                    <option value="B">
+                        Billions (B) USD
+                    </option>
+                </select>
+            </div>
 
-          <div id="pcRevDiv">
-            <input type="number" name="pcRevSlider" id="pcRevSlider" class="numeric" min=
-            "0" max="1000" value="0" />
+            <div class="sliders">
+                <div class="slidecontainer">
+                    <div id="revDiv">
+                        <input type="number" name="revSlider" id="revSlider" class="numeric" min="0" max="100" value="0" />
 
-            <p>Additional Revenue (USD per capita): <span id=
-            "perCapitaRevenueVal">$0</span></p>
-          </div>
-		  
-		   <div id="grpcdiv">
-            <input type="number" name="grpcSlider" id="grpcSlider" class="numeric" min=
-            "0" max="1000" value="0" />
+                        <p>Additional Revenue (% of GRpC): <span id="revenueVal">0%</span></p>
+                    </div>
 
-            <p>New gov. rev. per capita(USD): <span id=
-            "grpcVal">$0</span></p>
-          </div>
-        </div>
+                    <div id="absRevDiv">
+                        <input type="number" name="absRevSlider" id="absRevSlider" class="numeric" min="0" max="1000" value="0" />
 
-        <div class="slidecontainer">
-          <input type="range" name="yearSlider" id="yearSlider" class="slider" min="1990"
-          max="2018" value="2018" />
+                        <p>Additional Revenue: <span id="absRevenueVal">$0</span></p>
+                    </div>
 
-          <p>Year: <span id="yearVal"></span></p>
-        </div>
-      </div><label><input class="outcomes" type="radio" name="test" value="mortality"
-      checked="checked" /> <img src="img/u5m.png" width="100" /></label>
-      <label><input class="outcomes" type="radio" name="test" value="matMortality" />
-      <img src="img/mmr.png" width="100" /></label> <!--
+                    <div id="pcRevDiv">
+                        <input type="number" name="pcRevSlider" id="pcRevSlider" class="numeric" min="0" max="1000" value="0" />
+
+                        <p>Additional Revenue per capita: <span id="perCapitaRevenueVal">$0</span></p>
+                    </div>
+
+                    <div id="grpcdiv">
+                        <input type="number" name="grpcSlider" id="grpcSlider" class="numeric" min="0" max="1000" value="0" />
+
+                        <p>New gov. rev. per capita: <span id="grpcVal">$0</span></p>
+                    </div>
+                </div>
+
+                <div class="slidecontainer">
+                    <input type="range" name="yearSlider" id="yearSlider" class="slider" min="1990" max="2018" value="2018" />
+
+                    <p>Year: <span id="yearVal"></span></p>
+                </div>
+            </div><label><input class="outcomes" type="radio" name="test" value="mortality" checked="checked" /> <img src="img/u5m.png" width="100" /></label>
+            <label><input class="outcomes" type="radio" name="test" value="matMortality" />
+                <img src="img/mmr.png" width="100" /></label>
+            <!--
                                 <label>
                                         <input class = "outcomes" type="radio" name="test" value="PScompletion">
                                         <img src="img/E_SDG goals_icons-individual-rgb-04.png" width = 100>
@@ -135,69 +131,68 @@
                                 </label>
                                 -->
 
-<h2>Download data:</h2>
-<ul>
-<li><a href = "GRADE-Mortality%20Dec%202020.xlsx">Excel workbook</a></li>
-<li><a href = "GRADE-Mortality%20Dec%202020.csv">Input data (CSV)</a></li>
-</ul>
-<p id="version">v1.7 04/12/20</p>
-      <div>
-        
-      </div>
+            <h2>Download data:</h2>
+            <ul>
+                <li><a href="GRADE-Mortality%20Dec%202020.xlsx">Excel workbook</a></li>
+                <li><a href="GRADE-Mortality%20Dec%202020.csv">Input data (CSV)</a></li>
+            </ul>
+            <p id="version">v1.8 10/12/20</p>
+            <div>
+
+            </div>
+        </div>
+        <div id="vis"></div>
+        <div class="output" , id="countrydata">
+            <p>
+                <span id="countrytext"></span>
+            </p>
+        </div>
     </div>
-    <div id="vis"></div>
-		<div class = "output", id="countrydata">
-		<p>
-			<span id="countrytext"></span>
-		</p>
-	</div>
-  </div><script src = "grade.js" type="text/javascript">
-  </script>
-  <script type="text/javascript">
-  var width = 1500;
-  var height = 700;
-  
-  var svg = d3.select('#vis').append('svg')
-		.attr('width', width)
-		.attr('height', height)
-		.call(d3.behavior.zoom()
-		.on("zoom", redraw))
-		.append("g");
-		
-var svg2 = d3.select('#vis').append('svg')
-		.attr('width', width)
-		.attr('height', subheight)
-		.call(d3.behavior.zoom()
-		.on("zoom", redraw))
-		.append("g");
-		
-function redraw() {
-		svg.attr("transform", "translate(" + d3.event.translate 
-		+ ")scale(" + d3.event.scale + ")");
-}
+    <script src="grade.js" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+        var width = 1500;
+        var height = 700;
 
-function mainUpdate()
-{
-	//updateLegend();
-	updateCountries();
-}
+        var svg = d3.select('#vis').append('svg')
+            .attr('width', width)
+            .attr('height', height)
+            .call(d3.behavior.zoom()
+                .on("zoom", redraw))
+            .append("g");
 
-var projection = d3.geo.mercator()
-		.scale(225)
-		.translate([width / 2, height / 2]);
+        var svg2 = d3.select('#vis').append('svg')
+            .attr('width', width)
+            .attr('height', subheight)
+            .call(d3.behavior.zoom()
+                .on("zoom", redraw))
+            .append("g");
 
-var path = d3.geo.path()
-		.projection(projection);
-		
-var colorScale = d3.scale.linear().
-range([outcomesMap.get(outcome).loCol, outcomesMap.get(outcome).hiCol]).
-interpolate(d3.interpolateLab);
+        function redraw() {
+            svg.attr("transform", "translate(" + d3.event.translate +
+                ")scale(" + d3.event.scale + ")");
+        }
+
+        function mainUpdate() {
+            //updateLegend();
+            updateCountries();
+        }
+
+        var projection = d3.geo.mercator()
+            .scale(225)
+            .translate([width / 2, height / 2]);
+
+        var path = d3.geo.path()
+            .projection(projection);
+
+        var colorScale = d3.scale.linear().
+        range([outcomesMap.get(outcome).loCol, outcomesMap.get(outcome).hiCol]).
+        interpolate(d3.interpolateLab);
 
 
-	queue()
-		.defer(d3.json, "countries.json")
-		.defer(d3.csv, "GRADE-Mortality Dec 2020.csv", typeAndSet) // process
-		.await(loaded);
-  </script>
-</body>
-</html>
+        queue()
+            .defer(d3.json, "countries.json")
+            .defer(d3.csv, "GRADE-Mortality Dec 2020.csv", typeAndSet) // process
+            .await(loaded);
+    </script>
+</body></html>

@@ -27,7 +27,7 @@ var outcomesList = [
 						name : "Maternal Mortality",    
 						loCol : "#dee5f8",              
 						hiCol : "#e09900",              
-						desc: "Maternal mortality (per 100,000 births)"}], 
+						desc: "Maternal mortality (per 100,000 births)"}],
 		/*[ "PScompletion",
 				{
 						name : "Primary School Completion Rate", 
